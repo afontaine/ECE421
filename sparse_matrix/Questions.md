@@ -17,13 +17,25 @@ Questions
 
 4. What is a tri-diagonal matrix?
 
+   A tri-diagonal matrix is a matrix that only contains values on the main
+   diagonal, the diagonal above the main diagonal, and the diagonal below the
+   main diagonal.
+
 5. What is the relationship between a tri-diagonal matrix and a generic sparse
    matrix?
+
+   A tri-diagonal matrix is a sparse matrix with a predicable data layout.
 
 6. Are tri-diagonal matrices important? And should they impact your design? If
    so, how?
 
+   They are. They should. We can create a class specifically optimized for
+   tri-diagonal matrices.
+
 7. What is a good data representation for a sparse matrix?
+
+   A set of custom cell objects that contain the row, column, and value of the
+   cell.
 
 8. Assume that you have a customer for your sparse matrix package. The customer
    states that their primary requirements as: for a N x N matrix with m non-zero
