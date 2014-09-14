@@ -10,7 +10,8 @@ Questions
 
    We should consult Wikipedia and mathematicians on features that would be
    useful to implement. We can also consult other implementations for useful
-   features to implement.
+   features to implement. We should understand Ruby's implementation of general
+   matrices, and customize those features to our problem.
 
 3. Who is likely to be the user of a sparse matrix package? What features are
    they likely to demand?
@@ -84,6 +85,8 @@ Questions
 10. What implementation approach are you using (reuse class, modify class,
     inherit from class, compose with class, build new standalone class);
     justify your selection.
+
+    We will be inheriting from the Matrix class,
 
 11. Is iteration a good technique for sparse matrix manipulation? Is “custom”
     iteration required for this problem?
