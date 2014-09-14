@@ -15,15 +15,15 @@ class TridiagonalMatrix < Matrix
 		upper = []
 		middle = []
 		lower = []
-		rows.length.times do |x|
-			rows[x].length.times do |y|
-				case x
-				when y - 1
-					upper << rows[x][y]
-				when y
-					middle << rows[x][y]
-				when y + 1
-					lower << rows[x][y]
+		rows.each_with_index do |x, i|
+			x.each_with_index do |y, j|
+				case i
+				when j - 1
+					upper << y
+				when j
+					middle << y
+				when j + 1
+					lower << y
 				else
 					raise RuntimeError, "Matrix is not tridiagonal" unless rows[x][y] == 0
 				end
@@ -31,6 +31,16 @@ class TridiagonalMatrix < Matrix
 		end
 		new upper, middle, lower
 	end
+
+	def square?
+		true
+	end
+
+	def row_count
+		middle_diagonal.size
+	end
+
+	alias :column_count :row_count
 
 	def to_s
 		string = ""
