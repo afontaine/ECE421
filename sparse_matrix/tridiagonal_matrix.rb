@@ -25,7 +25,7 @@ class TridiagonalMatrix < Matrix
 				when j + 1
 					lower << y
 				else
-					raise RuntimeError, "Matrix is not tridiagonal" unless rows[x][y] == 0
+					raise RuntimeError, "Matrix is not tridiagonal" unless y == 0
 				end
 			end
 		end
