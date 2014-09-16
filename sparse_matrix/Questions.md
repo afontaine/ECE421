@@ -53,7 +53,7 @@ Questions
    where m is number of non-zero elements and O(1) insertion. The key would be
    the serialized location (eg: "row,column") and the value would be the value of
    that location in the matrix. It would be simple to wrap this Hash in a custom
-   class that takes in the row and column seperately and serializes it into the
+   class that takes in the row and column separately and serializes it into the
    appropriate key internally.
 
 9. Design Patterns are common tricks which normally enshrine good practice.
@@ -74,9 +74,9 @@ Questions
    This pattern is where there is a base abstract factory that outlines a
    factory contract. There are then concrete factories that implement the
    contract laid out by the abstract factory. Each concrete factory may have
-   different implememntations, typically revolving around returning different
+   different implementations, typically revolving around returning different
    subclasses of the class originally declared in the abstract factory. In
-   Ruby this can be accomblished by having the AbstractFactory be a module that
+   Ruby this can be accomplished by having the AbstractFactory be a module that
    contains the contract as functions whose bodies all contain "raise
    NotImplementedException, 'Error Message'". The concrete factories would then
    include said module and re-implement all of its functions, but with actual
