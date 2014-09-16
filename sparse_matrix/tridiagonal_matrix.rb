@@ -2,10 +2,13 @@ require 'matrix'
 
 class TridiagonalMatrix < Matrix
 
+	include ExceptionForMatrix
+
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
 		@middle_diagonal = middle
 		@lower_diagonal = lower
+		self
 	end
 
 	def self.rows(rows, copy=true)
@@ -16,6 +19,7 @@ class TridiagonalMatrix < Matrix
 		middle = []
 		lower = []
 		rows.each_with_index do |x, i|
+			raise ErrDimensionMismatch, "row size differs (#{x.size} should be #{size})" unless x.size == size
 			x.each_with_index do |y, j|
 				case i
 				when j - 1
@@ -29,6 +33,17 @@ class TridiagonalMatrix < Matrix
 				end
 			end
 		end
+		new upper, middle, lower
+	end
+
+	def self.[](*rows)
+		rows(rows, false)
+	end
+
+	def self.identity(size)
+		upper = Array.new(size) { 0 }
+		middle = Array.new(size) { 1 }
+		lower = Array.new(size) { 0 }
 		new upper, middle, lower
 	end
 
@@ -64,5 +79,19 @@ class TridiagonalMatrix < Matrix
 		string
 	end
 
-	attr_accessor :upper_diagonal, :lower_diagonal, :middle_diagonal
+	def upper_diagonal
+		Vector[@upper_diagonal]
+	end
+
+	def middle_diagonal
+		Vector[@middle_diagonal]
+	end
+
+	def lower_diagonal
+		Vector[@lower_diagonal]
+	end
+
+	private
+	attr_writer :upper_diagonal, :middle_diagonal, :lower_diagonal
+
 end
