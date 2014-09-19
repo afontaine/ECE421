@@ -3,12 +3,8 @@ require 'matrix'
 require_relative '../tridiagonal_matrix'
 
 class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
-
 	def test_create
-
-		matrix_good = nil
-
-		matrix_good = TridiagonalMatrix[
+		m = TridiagonalMatrix[
 			[2, 3, 0, 0, 0, 0],
 			[1, 2, 3, 0, 0, 0],
 			[0, 1, 2, 3, 0, 0],
@@ -17,25 +13,45 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 			[0, 0, 0, 0, 1, 2]
 		]
 
-		assert_not_nil(matrix_good)
-		assert_true(matrix_good.square?)
+		rm = Matrix[
+			[2, 3, 0, 0, 0, 0],
+			[1, 2, 3, 0, 0, 0],
+			[0, 1, 2, 3, 0, 0],
+			[0, 0, 1, 2, 3, 0],
+			[0, 0, 0, 1, 2, 3],
+			[0, 0, 0, 0, 1, 2]
+		]
 
-		puts matrix_good.to_s
+		s = Vector[1, 2, 3, 4, 5, 6]
+
+		assert_not_nil(m)
+		assert_true(m.square?)
+		assert_equal(m.determinant, rm.determinant)
+		assert_equal(m.solve(s), rm.lup.solve(s))
 
 
-		params_bad_upper = {}
-		params_bad_upper[:upper] = params_good[:middle]
-		params_bad_upper[:middle] = params_good[:middle]
-		params_bad_upper[:lower] = params_good[:lower]
-
-		assert_raise(Matrix::ErrDimensionMismatch) {factory.create(params_bad_upper)}
-
-		params_bad_lower = {}
-		params_bad_lower[:upper] = params_good[:upper]
-		params_bad_lower[:middle] = params_good[:middle]
-		params_bad_lower[:lower] = params_good[:middle]
-
-		assert_raise(Matrix::ErrDimensionMismatch) {factory.create(params_bad_upper)}
+		assert_raise(TridiagonalMatrix::ErrDimensionMismatch) do
+			TridiagonalMatrix[
+				[2, 3, 0, 0, 0, 0],
+				[1, 2, 3, 0, 0, 0],
+				[0, 1, 2, 3, 0, 0],
+				[0, 0, 1, 2, 3, 0],
+				[0, 0, 0, 1, 2, 3],
+				[0, 0, 0, 0, 1, 2],
+				[0, 0, 0, 0, 0, 1]
+			]
+		end
+		
+		assert_raise(TridiagonalMatrix::ErrNotTridiagonal) do
+			TridiagonalMatrix[
+				[2, 3, 0, 0, 0, 0],
+				[1, 2, 3, 0, 0, 0],
+				[0, 1, 2, 3, 0, 0],
+				[0, 0, 1, 2, 3, 0],
+				[5, 0, 0, 1, 2, 3],
+				[0, 0, 0, 0, 1, 2]
+			]
+		end
 
 	end
 end
