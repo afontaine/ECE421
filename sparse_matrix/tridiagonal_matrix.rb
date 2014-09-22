@@ -12,8 +12,8 @@ class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
 
-	alias :column_count :row_count
-	alias :det :determinant
+	alias_method :column_count, :row_count
+	alias_method :det, :determinant
 
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
@@ -52,10 +52,61 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def self.identity(size)
-		upper = Array.new(size) { 0 }
-		middle = Array.new(size) { 1 }
-		lower = Array.new(size) { 0 }
+		scalar(size, 1)
+	end
+
+	def self.scalar(n, value)
+		upper = Array.new(n) { 0 }
+		middle = Array.new(n) { value }
+		lower = Array.new(n) { 0 }
 		new upper, middle, lower
+	end
+
+	def map
+		return to_enum :map unless block_given?
+		block = Proc.new
+		new_upper = @upper.map(&block)
+		new_middle = @middle.map(&block)
+		new_lower = @lower.map(&block)
+		new new_upper, new_middle, new_lower
+	end
+
+	def row(i)
+		return self unless i < row_count
+		r = []
+		column_count.times do |j|
+			r << self[i, j]
+		end
+		r.each(&Proc.new) if block_given?
+		Vector.elements(r)
+	end
+
+	def column(j)
+		return self unless j < column_count
+		c = []
+		row_count.times do |i|
+			c <<  get_value(i, j)
+		end
+		c.each(&Proc.new) if block_given?
+		Vector.elements(c)
+	end
+
+	def each
+		return to_enum :each unless block_given?
+		each_with_index do |x|
+			yield x
+		end
+		self
+	end
+
+	def each_with_index
+		return to_enum :each_with_index, which unless block_given?
+		row_count.times do |i|
+			column_count.times do |j|
+				yield self[i, j], i, j
+			end
+		end
+		self
 	end
 
 	def square?
@@ -63,55 +114,23 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def row_count
-		middle_diagonal.size
+		@middle_diagonal.size
 	end
 
 	def to_s
-		string = "#{self.class.name}["
-		@middle_diagonal.length.times do |x|
-			line = []
-
-			@middle_diagonal.length.times do |y|
-				line << get_value(x, y)
-			end
-			string += "#{line}"
-		end
-		string += ']'
-		string
+		"#{self.class.name}#{to_a}"
 	end
 
-	def each(which = :all)
-		return to_enum :each, which unless block_given?
-
-		case which
-
-		when :all
-			@middle_diagonal.each_with_index do |_x, i|
-				@middle_diagonal.each_with_index do |_y, j|
-					yield get_value(i, j)
-				end
-			end
-		when :diagonal
-			block = Proc.new
-			@middle_diagonal.each(&block)
-		when :tridiagonal
-			@middle_diagonal.each_with_index do |_x, i|
-				yield @lower_diagonal[i - 1] if i > 0
-				yield @middle_diagonal[i]
-				yield @upper_diagonal[i] if i < @lower_diagonal.size
-			end
-		when :off_diagonal
-			@middle_diagonal.each_with_index do |_x, i|
-				(0...i).each do
-					yield 0
-				end if i > 0
-				yield @lower_diagonal[i - 1] if i > 0
-				yield @upper_diagonal[i] if i < @upper_diagonal.size
-				(i...@upper_diagonal.size).each do
-					yield 0
-				end if i < @upper_diagonal.size
-			end
+	def to_a
+		a = []
+		@middle_diagonal.size.times do |i|
+			a << row(i).to_a
 		end
+		a
+	end
+
+	def to_m
+		Matrix.rows(to_a, false)
 	end
 
 	def solve(vec)
@@ -130,6 +149,10 @@ class TridiagonalMatrix < Matrix
 		else
 			return 0
 		end
+	end
+
+	def [](i, j)
+		get_value(i, j)
 	end
 
 	def determinant
@@ -181,6 +204,7 @@ class TridiagonalMatrix < Matrix
 					(@middle_diagonal[i] - @lower_diagonal[i - 1] * c[i - 1])
 			end
 		end
+		d
 	end
 
 	def x_prime(c, d)
@@ -192,5 +216,6 @@ class TridiagonalMatrix < Matrix
 				x << d[i] - c[i] * x.last
 			end
 		end
+		x
 	end
 end
