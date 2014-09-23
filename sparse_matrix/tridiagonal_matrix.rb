@@ -12,10 +12,6 @@ class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
 
-	alias_method :column_count, :row_count
-	alias_method :det, :determinant
-	alias_method :inspect, :to_s
-
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
 		@middle_diagonal = middle
@@ -64,24 +60,20 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def ==(other)
-		if other.respond_to?(:upper_diagonal) &&
-			other.respond_to?(:middle_diagonal) &&
-			other.respond_to?(:lower_diagonal)
-			(other.upper_diagonal == upper_diagonal &&
-				other.middle_diagonal == middle_diagonal &&
-				other.lower_diagonal == lower_diagonal)
+		if other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
+			result = true
+			other.each_with_index { |x, i, j| result &&= (self[i, j] == x) }
+			result
 		else
 			false
 		end
 	end
 
 	def eql?(other)
-		if other.respond_to?(:upper_diagonal) &&
-			other.respond_to?(:middle_diagonal) &&
-			other.respond_to?(:lower_diagonal)
-			(upper_diagonal.eql?(other.upper_diagonal) &&
-				middle_diagonal.eql?(other.middle_diagonal) &&
-				lower_diagonal.eql?(other.lower_diagonal))
+		if other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
+			result = true
+			other.each_with_index { |x, i, j| result && (self[i, j].eql?(x)) }
+			result
 		else
 			false
 		end
@@ -94,10 +86,10 @@ class TridiagonalMatrix < Matrix
 	def map
 		return to_enum :map unless block_given?
 		block = Proc.new
-		new_upper = @upper.map(&block)
-		new_middle = @middle.map(&block)
-		new_lower = @lower.map(&block)
-		new new_upper, new_middle, new_lower
+		new_upper = @upper_diagonal.map(&block)
+		new_middle = @middle_diagonal.map(&block)
+		new_lower = @lower_diagonal.map(&block)
+		TridiagonalMatrix.new new_upper, new_middle, new_lower
 	end
 
 	def row(i)
@@ -180,10 +172,6 @@ class TridiagonalMatrix < Matrix
 		end
 	end
 
-	def [](i, j)
-		get_value(i, j)
-	end
-
 	def determinant
 		continuant(@middle_diagonal.size - 1)
 	end
@@ -199,6 +187,11 @@ class TridiagonalMatrix < Matrix
 	def lower_diagonal
 		Vector[@lower_diagonal]
 	end
+
+	alias_method :column_count, :row_count
+	alias_method :det, :determinant
+	alias_method :inspect, :to_s
+	alias_method :[], :get_value
 
 		private
 
