@@ -14,6 +14,7 @@ class TridiagonalMatrix < Matrix
 
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
+	alias_method :inspect, :to_s
 
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
@@ -60,6 +61,34 @@ class TridiagonalMatrix < Matrix
 		middle = Array.new(n) { value }
 		lower = Array.new(n) { 0 }
 		new upper, middle, lower
+	end
+
+	def ==(other)
+		if other.respond_to?(:upper_diagonal) &&
+			other.respond_to?(:middle_diagonal) &&
+			other.respond_to?(:lower_diagonal)
+			(other.upper_diagonal == upper_diagonal &&
+				other.middle_diagonal == middle_diagonal &&
+				other.lower_diagonal == lower_diagonal)
+		else
+			false
+		end
+	end
+
+	def eql?(other)
+		if other.respond_to?(:upper_diagonal) &&
+			other.respond_to?(:middle_diagonal) &&
+			other.respond_to?(:lower_diagonal)
+			(upper_diagonal.eql?(other.upper_diagonal) &&
+				middle_diagonal.eql?(other.middle_diagonal) &&
+				lower_diagonal.eql?(other.lower_diagonal))
+		else
+			false
+		end
+	end
+
+	def hash
+		[@upper_diagonal, @middle_diagonal, @lower_diagonal].hash
 	end
 
 	def map
