@@ -70,10 +70,12 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def eql?(other)
-		if other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
-			result = true
-			other.each_with_index { |x, i, j| result && (self[i, j].eql?(x)) }
-			result
+		if other.respond_to?(:upper_diagonal) &&
+			other.respond_to?(:middle_diagonal) &&
+			other.respond_to?(:lower_diagonal)
+			(upper_diagonal.eql?(other.upper_diagonal) &&
+				middle_diagonal.eql?(other.middle_diagonal) &&
+				lower_diagonal.eql?(other.lower_diagonal))
 		else
 			false
 		end
