@@ -1,6 +1,7 @@
 require 'matrix'
 require 'e2mmap.rb'
 require 'mathn'
+require 'forwardable'
 
 module ExceptionForTridiagionalMatrix
 	extend ExceptionForMatrix
@@ -11,6 +12,9 @@ end
 class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
+	extend Forwardable
+
+	delegate [:+, :*, :**, :/, :-] => :to_m
 
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
@@ -132,32 +136,6 @@ class TridiagonalMatrix < Matrix
 		self
 	end
 
-	def +(other)
-		fail ErrDimensionMismatch, "Matrix must be #{row_count}x#{column_count}" unless other.row_count == row_count\
-			&& other.sqaure?
-		r = Array.new(row_count) { Array.new(column_count) }
-		each_with_index do |x, i, j|
-			r[i][j] = x + other[i, j]
-		end
-		Matrix[r]
-	end
-
-	def *(other)
-		to_m * other
-	end
-
-	def **(other)
-		to_m ** other
-	end
-
-	def /(other)
-		to_m / other
-	end
-
-	def -(other)
-		self + other.map { |e| -1 * e}
-	end
-
 	def square?
 		true
 	end
@@ -220,6 +198,7 @@ class TridiagonalMatrix < Matrix
 	alias_method :det, :determinant
 	alias_method :inspect, :to_s
 	alias_method :[], :get_value
+	alias_method :collect, :map
 
 		private
 
