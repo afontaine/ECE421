@@ -82,7 +82,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def hash
-		[@upper_diagonal, @middle_diagonal, @lower_diagonal].hash
+		@upper_diagonal.hash ^ @middle_diagonal.hash ^ @lower_diagonal.hash
 	end
 
 	def map
@@ -130,6 +130,32 @@ class TridiagonalMatrix < Matrix
 			end
 		end
 		self
+	end
+
+	def +(other)
+		fail ErrDimensionMismatch, "Matrix must be #{row_count}x#{column_count}" unless other.row_count == row_count\
+			&& other.sqaure?
+		r = Array.new(row_count) { Array.new(column_count) }
+		each_with_index do |x, i, j|
+			r[i][j] = x + other[i, j]
+		end
+		Matrix[r]
+	end
+
+	def *(other)
+		to_m * other
+	end
+
+	def **(other)
+		to_m ** other
+	end
+
+	def /(other)
+		to_m / other
+	end
+
+	def -(other)
+		self + other.map { |e| -1 * e}
 	end
 
 	def square?
