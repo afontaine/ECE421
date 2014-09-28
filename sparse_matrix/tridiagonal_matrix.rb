@@ -123,7 +123,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def each_with_index
-		return to_enum :each_with_index, which unless block_given?
+		return to_enum :each_with_index unless block_given?
 		row_count.times do |i|
 			column_count.times do |j|
 				yield self[i, j], i, j
