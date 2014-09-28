@@ -1,6 +1,7 @@
 require 'matrix'
 require 'e2mmap.rb'
 require 'mathn'
+require 'forwardable'
 
 module ExceptionForTridiagionalMatrix
 	extend ExceptionForMatrix
@@ -11,6 +12,9 @@ end
 class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
+	extend Forwardable
+
+	delegate [:+, :*, :**, :/, :-] => :to_m
 
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
@@ -82,7 +86,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def hash
-		[@upper_diagonal, @middle_diagonal, @lower_diagonal].hash
+		@upper_diagonal.hash ^ @middle_diagonal.hash ^ @lower_diagonal.hash
 	end
 
 	def map
@@ -194,6 +198,7 @@ class TridiagonalMatrix < Matrix
 	alias_method :det, :determinant
 	alias_method :inspect, :to_s
 	alias_method :[], :get_value
+	alias_method :collect, :map
 
 		private
 

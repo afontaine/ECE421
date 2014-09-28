@@ -91,6 +91,11 @@ Questions
 11. Is iteration a good technique for sparse matrix manipulation? Is “custom”
     iteration required for this problem?
 
+    Iteration is always a good technique for data structure classes. Providing
+    ways to iterate over the structure in various ways (such as only going over
+    the non-zero values) can increase usability. Custom iteration is necessary,
+    as we are using a custom data store to store the data.
+
 12. What exceptions can occur during the processing of sparse matrices? And how
     should the system handle them?
 
