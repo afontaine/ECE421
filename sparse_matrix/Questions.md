@@ -2,8 +2,10 @@ Questions
 =========
 1. What is a sparse matrix and what features should it possess?
 
-   A sparse matrix is a matrix where most of the cells have the value 0. It
-   should support input and output.
+   A sparse matrix is a matrix where most of the cells have the value 0. It 
+   should support all the features a base matrix supports, but provide a
+   much more effecient memory format. These features primarily include 3
+   main categories: construction, enumerating/indexing, and arithmatic.
 
 2. What sources of information should you consult to derive features? Do
    analogies exist? If so with what?
@@ -11,10 +13,20 @@ Questions
    We should consult Wikipedia and mathematicians on features that would be
    useful to implement. We can also consult other implementations for useful
    features to implement. We should understand Ruby's implementation of general
-   matrices, and customize those features to our problem.
+   matrices, and customize those features to our problem. Science python is a
+   good implementation to consult for features to implement.
 
 3. Who is likely to be the user of a sparse matrix package? What features are
    they likely to demand?
+
+   Mathmeticians, engineers, staticians, accountants, sparse-matrix enthusiasts,
+   and people that have to mark sparse matrices because it was an assignment.
+   The bulk of the customers feature requests will focus around having the same
+   features as a base matrix but improved space and arithmatic efficiency as the
+   matrix becomes more and more sparse. Some of our customers will require obscure
+   features like never using a loop, minimal use of temporary variables and
+   conditionals. This small market will also be very focused on our library
+   conforming to a well defined contract.
 
 4. What is a tri-diagonal matrix?
 
@@ -36,8 +48,13 @@ Questions
 
 7. What is a good data representation for a sparse matrix?
 
-   A set of custom cell objects that contain the row, column, and value of the
-   cell or a dictionary of keys
+   There are many data structure choices for sparse matrix. The simplest one
+   would be a hash of hashes, with keys being the row and column index. This
+   structure behaves very similarly to an array of arrays, making delegation
+   to the base matrix class very simple. Another structure would be something
+   like compressed row format. This format is great for arithmetic, but is
+   very specialized and will severely limit our ability to delegate to the
+   base matrix class.
 
 8. Assume that you have a customer for your sparse matrix package. The customer
    states that their primary requirements as: for a N x N matrix with m non-zero
@@ -86,15 +103,22 @@ Questions
     inherit from class, compose with class, build new standalone class);
     justify your selection.
 
-    We will be inheriting from the Matrix class,
+    We will be inheriting from the Matrix class as this will give us plenty
+    of functionality for free. The caveat with this is that it will require
+    us to use a sparse storage format very similar to an array of arrays
+    so that the base matrix functions can access it like it normally does. To
+    achieve this format we have chosen to also extend Hash as SparseHash and
+    specialize this class to behave like an array (and an array of arrays) as
+    much as possible. This will allow us to maximize our use of the base matrix
+    class.
 
 11. Is iteration a good technique for sparse matrix manipulation? Is “custom”
     iteration required for this problem?
 
     Iteration is always a good technique for data structure classes. Providing
     ways to iterate over the structure in various ways (such as only going over
-    the non-zero values) can increase usability. Custom iteration is necessary,
-    as we are using a custom data store to store the data.
+    the non-zero values) can increase usability. Custom iteration was necessary
+    on our extension of SparseHash so that it iterated like an array. 
 
 12. What exceptions can occur during the processing of sparse matrices? And how
     should the system handle them?
