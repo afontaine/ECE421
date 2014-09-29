@@ -16,6 +16,8 @@ class TridiagonalMatrix < Matrix
 
 	delegate [:+, :*, :**, :/, :-] => :to_m
 
+	public
+
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
 		@middle_diagonal = middle
@@ -65,9 +67,7 @@ class TridiagonalMatrix < Matrix
 
 	def ==(other)
 		if other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
-			result = true
-			other.each_with_index { |x, i, j| result &&= (self[i, j] == x) }
-			result
+			other.each_with_index.inject(true) { |result, x| result &&= (self[x[1], x[2]] == x[0]) }
 		else
 			false
 		end
@@ -100,22 +100,20 @@ class TridiagonalMatrix < Matrix
 
 	def row(i)
 		return self unless i < row_count
-		r = []
-		column_count.times do |j|
-			r << self[i, j]
+		row = Array.new(row_count) do |j|
+			self[i, j]
 		end
-		r.each(&Proc.new) if block_given?
-		Vector.elements(r)
+		row.each(&Proc.new) if block_given?
+		Vector.elements(row, false)
 	end
 
 	def column(j)
 		return self unless j < column_count
-		c = []
-		row_count.times do |i|
-			c <<  get_value(i, j)
+		col = Array.new(column_count) do |i|
+			self[i, j]
 		end
-		c.each(&Proc.new) if block_given?
-		Vector.elements(c)
+		col.each(&Proc.new) if block_given?
+		Vector.elements(col, false)
 	end
 
 	def each
@@ -149,11 +147,9 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def to_a
-		a = []
-		@middle_diagonal.size.times do |i|
+		row_count.times.inject([]) do |a, i|
 			a << row(i).to_a
 		end
-		a
 	end
 
 	def to_m
@@ -183,15 +179,15 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def upper_diagonal
-		Vector[@upper_diagonal]
+		Vector.elements(@upper_diagonal)
 	end
 
 	def middle_diagonal
-		Vector[@middle_diagonal]
+		Vector.elements(@middle_diagonal)
 	end
 
 	def lower_diagonal
-		Vector[@lower_diagonal]
+		Vector.elements(@lower_diagonal)
 	end
 
 	alias_method :column_count, :row_count
@@ -212,39 +208,33 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def c_prime
-		c = []
-		@upper_diagonal.each_with_index do |x, i|
-			if i == 0
-				c << x / @middle_diagonal[i]
+		@upper_diagonal.each_with_index.inject([]) do |c, x|
+			if x[1] == 0
+				c << x[0] / @middle_diagonal[x[1]]
 			else
-				c << x / (@middle_diagonal[i] - @lower_diagonal[i] * c.last)
+				c << x[0] / (@middle_diagonal[x[1]] - @lower_diagonal[x[1]] * c.last)
 			end
 		end
-		c
 	end
 
 	def d_prime(vec, c)
-		d = []
-		vec.each_with_index do |x, i|
-			if i == 0
-				d << x / @middle_diagonal[i]
+		vec.each_with_index.inject([]) do |d, x|
+			if x[1] == 0
+				d << x[0] / @middle_diagonal[x[1]]
 			else
-				d << (x - @lower_diagonal[i - 1] * d.last) /
-					(@middle_diagonal[i] - @lower_diagonal[i - 1] * c[i - 1])
+				d << (x[0] - @lower_diagonal[x[1] - 1] * d.last) /
+					(@middle_diagonal[x[1]] - @lower_diagonal[x[1] - 1] * c[x[1] - 1])
 			end
 		end
-		d
 	end
 
 	def x_prime(c, d)
-		x = []
-		(d.size - 1).downto(0) do |i|
+		(d.size - 1).downto(0).inject([]) do |x, i|
 			if i == d.size - 1
 				x << d[i]
 			else
 				x << d[i] - c[i] * x.last
 			end
 		end
-		x
 	end
 end
