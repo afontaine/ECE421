@@ -103,14 +103,15 @@ Questions
     inherit from class, compose with class, build new standalone class);
     justify your selection.
 
-    We will be inheriting from the Matrix class as this will give us plenty
-    of functionality for free. The caveat with this is that it will require
-    us to use a sparse storage format very similar to an array of arrays
-    so that the base matrix functions can access it like it normally does. To
-    achieve this format we have chosen to also extend Hash as SparseHash and
+    For SparseMatrix we will be inheriting from the Matrix class as this will 
+    give us plenty of functionality for free. The caveat with this is that it 
+    will require us to use a sparse storage format very similar to an array of 
+    arrays so that the base matrix functions can access it like it normally does. 
+    To achieve this format we have chosen to also extend Hash as SparseHash and
     specialize this class to behave like an array (and an array of arrays) as
     much as possible. This will allow us to maximize our use of the base matrix
-    class.
+    class. When necessary methods will be overriden to improve performance by
+    taking advantage of the sparsity of our matrix.
 
 11. Is iteration a good technique for sparse matrix manipulation? Is “custom”
     iteration required for this problem?
@@ -118,7 +119,14 @@ Questions
     Iteration is always a good technique for data structure classes. Providing
     ways to iterate over the structure in various ways (such as only going over
     the non-zero values) can increase usability. Custom iteration was necessary
-    on our extension of SparseHash so that it iterated like an array. 
+    on our extension of SparseHash so that it iterated like an array, while still
+    not expanding into a full array. SparseHash also provides the option to
+    iterate over only the non-zero values.
+    
+    Our implementation of SparseHash has allowed all of the base Matrix iteration 
+    methods to work as is. Although for performance and feature reasons we overrode
+    some operations in Matrix to iterate over only non-zero elements. We also added
+    the ability to iterate over only non-zero features as well.
 
 12. What exceptions can occur during the processing of sparse matrices? And how
     should the system handle them?
