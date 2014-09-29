@@ -2,7 +2,7 @@ Questions
 =========
 1. What is a sparse matrix and what features should it possess?
 
-   A sparse matrix is a matrix where most of the cells have the value 0. It 
+   A sparse matrix is a matrix where most of the cells have the value 0. It
    should support all the features a base matrix supports, but provide a
    much more effecient memory format. These features primarily include 3
    main categories: construction, enumerating/indexing, and arithmatic.
@@ -103,10 +103,10 @@ Questions
     inherit from class, compose with class, build new standalone class);
     justify your selection.
 
-    For SparseMatrix we will be inheriting from the Matrix class as this will 
-    give us plenty of functionality for free. The caveat with this is that it 
-    will require us to use a sparse storage format very similar to an array of 
-    arrays so that the base matrix functions can access it like it normally does. 
+    For SparseMatrix we will be inheriting from the Matrix class as this will
+    give us plenty of functionality for free. The caveat with this is that it
+    will require us to use a sparse storage format very similar to an array of
+    arrays so that the base matrix functions can access it like it normally does.
     To achieve this format we have chosen to also extend Hash as SparseHash and
     specialize this class to behave like an array (and an array of arrays) as
     much as possible. This will allow us to maximize our use of the base matrix
@@ -122,14 +122,28 @@ Questions
     on our extension of SparseHash so that it iterated like an array, while still
     not expanding into a full array. SparseHash also provides the option to
     iterate over only the non-zero values.
-    
-    Our implementation of SparseHash has allowed all of the base Matrix iteration 
+
+    Our implementation of SparseHash has allowed all of the base Matrix iteration
     methods to work as is. Although for performance and feature reasons we overrode
     some operations in Matrix to iterate over only non-zero elements. We also added
     the ability to iterate over only non-zero features as well.
 
 12. What exceptions can occur during the processing of sparse matrices? And how
     should the system handle them?
+
+    Going out of bounds: Ruby tends to return nil if you go out of bounds on
+    various data types, including Hash, Array, and the original Matrix class.
+    We will do the same.
+
+    Operations with incompatible types: We can only add matrices of the same
+    dimension, or multiply matrices where the first matrix has the same number
+    of rows as the second matrix has column. If these dimensions are not met,
+    we will throw an exception stating a dimension mismatch.
+
+    Adding elements outside the original range: In a sparse matrix, we can grow
+    the matrix to the appropriate size. In a tridiagonal matrix, we can grow the
+    matrix only if the added element is on one of the three diagonals. Anything
+    else will raise an exception.
 
 13. What information does the system require to create a sparse matrix object?
     Remember you are building for a set of unknown customers – what will they want?
