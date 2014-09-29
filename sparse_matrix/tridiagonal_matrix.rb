@@ -9,7 +9,7 @@ module ExceptionForTridiagionalMatrix
 	def_exception('ErrNotTridiagonal', 'Not Tridiagonal Matrix')
 end
 
-class TridiagonalMatrix < Matrix
+class TridiagonalMatrix
 
 	include ExceptionForTridiagionalMatrix
 	extend Forwardable
@@ -66,8 +66,8 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def ==(other)
-		return false unless other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
-		other.each_with_index.reduce(true) { |result, x| result && (self[x[1], x[2]] == x[0]) }
+		return false unless other.respond_to?(:zip)
+		zip(other).each.reduce(true) { |result, x| result && (x[1] == x[0]) }
 	end
 
 	def eql?(other)
