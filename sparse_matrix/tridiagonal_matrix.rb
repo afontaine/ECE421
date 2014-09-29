@@ -66,23 +66,17 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def ==(other)
-		if other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
-			other.each_with_index.inject(true) { |result, x| result &&= (self[x[1], x[2]] == x[0]) }
-		else
-			false
-		end
+		return false unless other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
+		other.each_with_index.reduce(true) { |result, x| result && (self[x[1], x[2]] == x[0]) }
 	end
 
 	def eql?(other)
-		if other.respond_to?(:upper_diagonal) &&
+		return false unless other.respond_to?(:upper_diagonal) &&
 			other.respond_to?(:middle_diagonal) &&
 			other.respond_to?(:lower_diagonal)
-			(upper_diagonal.eql?(other.upper_diagonal) &&
-				middle_diagonal.eql?(other.middle_diagonal) &&
-				lower_diagonal.eql?(other.lower_diagonal))
-		else
-			false
-		end
+		(upper_diagonal.eql?(other.upper_diagonal) &&
+			middle_diagonal.eql?(other.middle_diagonal) &&
+			lower_diagonal.eql?(other.lower_diagonal))
 	end
 
 	def hash
@@ -100,27 +94,21 @@ class TridiagonalMatrix < Matrix
 
 	def row(i)
 		return self unless i < row_count
-		row = Array.new(row_count) do |j|
-			self[i, j]
-		end
+		row = Array.new(row_count) { |j| self[i, j] }
 		row.each(&Proc.new) if block_given?
 		Vector.elements(row, false)
 	end
 
 	def column(j)
 		return self unless j < column_count
-		col = Array.new(column_count) do |i|
-			self[i, j]
-		end
+		col = Array.new(column_count) { |i| self[i, j] }
 		col.each(&Proc.new) if block_given?
 		Vector.elements(col, false)
 	end
 
 	def each
 		return to_enum :each unless block_given?
-		each_with_index do |x|
-			yield x
-		end
+		each_with_index { |x| yield x }
 		self
 	end
 
@@ -147,9 +135,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def to_a
-		row_count.times.inject([]) do |a, i|
-			a << row(i).to_a
-		end
+		Array.new(row_count) { |i|	row(i).to_a }
 	end
 
 	def to_m
@@ -208,7 +194,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def c_prime
-		@upper_diagonal.each_with_index.inject([]) do |c, x|
+		@upper_diagonal.each_with_index.reduce([]) do |c, x|
 			if x[1] == 0
 				c << x[0] / @middle_diagonal[x[1]]
 			else
@@ -218,7 +204,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def d_prime(vec, c)
-		vec.each_with_index.inject([]) do |d, x|
+		vec.each_with_index.reduce([]) do |d, x|
 			if x[1] == 0
 				d << x[0] / @middle_diagonal[x[1]]
 			else
@@ -229,7 +215,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def x_prime(c, d)
-		(d.size - 1).downto(0).inject([]) do |x, i|
+		(d.size - 1).downto(0).reduce([]) do |x, i|
 			if i == d.size - 1
 				x << d[i]
 			else
