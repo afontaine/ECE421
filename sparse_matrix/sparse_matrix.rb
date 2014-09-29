@@ -9,12 +9,23 @@ class SparseMatrix < Matrix
 
 	attr_reader :row_count
 
-	Contract EnumerableOf[RespondTo[:each]], RespondTo[:to_i] => SparseMatrix
+	Contract EnumerableOf[RespondTo[:each_with_index]], RespondTo[:to_i] => SparseMatrix
 	def initialize(rows, column_count = rows[0].size)
 		column_count = column_count.to_i
-		create(rows.size, column_count) do |i,j|
-			rows[i][j]
-		end			
+		rows_h = SparseHash.new(rows.size) { |h,k| SparseHash.new(column_count, 0) }
+
+		rows.each_with_index do |row,i|
+			row_h = rows_h[i]
+			row.each_with_index do |val,j|
+				row_h[j] = val unless val == 0 || val.nil?
+			end
+			rows_h[i] = row_h if row_h.length > 0
+		end
+
+		@rows = rows_h
+		@column_count = column_count
+		@row_count = rows.size
+
 		self
 	end
 
@@ -52,38 +63,32 @@ class SparseMatrix < Matrix
 		Array.new(row_count) { |i| Array.new(column_count) { |j| self[i,j] } }
 	end
 
-	Contract Maybe[Func[Any => Any]] => RespondTo[:each]
-	def each
-		return to_enum :each unless block_given?
-		row_count.times do |i|
-			column_count.times do |j|
-				yield self[i][j]
-			end
-		end
-		self
-	end
-
+	Contract nil => SparseMatrix
 	def transpose
 		SparseMatrix.build(column_count, row_count) do |i,j|
 			self[j,i]
 		end
 	end
 
-	private
-
-	def create(row_count, column_count)
-		rows_h = SparseHash.new(row_count) { SparseHash.new(column_count, 0) }
-		row_count.times do |i|
-			row_h = rows_h[i]
-			column_count.times do |j|
-				val = yield i,j
-				row_h[j] = val if val != 0
-			end
-			rows_h[i] = row_h if row_h.size > 0
+	Contract Or[Symbol, Func[Any => Any], nil] => Or[Enumerator, SparseMatrix]
+	def each(which = :all)
+		return to_enum :each, which unless block_given?
+		block = Proc.new
+		if which == :non_zero
+			@rows.each(false, &block)
+		else
+			super(which, &block)
 		end
+	end
 
-		@rows = rows_h
-		@column_count = column_count
-		@row_count = row_count
+	Contract Or[Symbol, Func[Any => Any], nil]  => Or[Enumerator, SparseMatrix]
+	def each_with_index(which = :all)
+		return to_enum :each_with_index, which unless block_given?
+		block = Proc.new
+		if which == :non_zero
+			@rows.each_with_index(false, &block)
+		else
+			super(which, &block)
+		end
 	end
 end
