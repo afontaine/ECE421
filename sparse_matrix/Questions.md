@@ -136,9 +136,10 @@ Questions
     We will do the same.
 
     Operations with incompatible types: We can only add matrices of the same
-    dimension, or multiply matrices where the first matrix has the same number
-    of rows as the second matrix has column. If these dimensions are not met,
-    we will throw an exception stating a dimension mismatch.
+    dimension (except in the case of direct or Kronecker sums), or multiply
+    matrices where the first matrix has the same number of rows as the second
+    matrix has column. If these dimensions are not met, we will throw an
+    exception stating a dimension mismatch.
 
     Adding elements outside the original range: In a sparse matrix, we can grow
     the matrix to the appropriate size. In a tridiagonal matrix, we can grow the
