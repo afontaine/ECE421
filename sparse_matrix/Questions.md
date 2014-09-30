@@ -66,12 +66,12 @@ Questions
    sparse matrix?
 
    Since storage and insertion is the focus of performance a simple
-   key-value-pair system like a Hash in Ruby would allow for minimal storage O(m),
-   where m is number of non-zero elements and O(1) insertion. The key would be
-   the serialized location (eg: "row,column") and the value would be the value of
-   that location in the matrix. It would be simple to wrap this Hash in a custom
-   class that takes in the row and column separately and serializes it into the
-   appropriate key internally.
+   key-value-pair system like a Hash (or Hash of Hashes) in Ruby would allow for 
+   minimal storage O(m), where m is number of non-zero elements and O(1) insertion. 
+   The key would be the serialized location (eg: "row,column") and the value would 
+   be the value of that location in the matrix. It would be simple to wrap this 
+   Hash in a custom class that takes in the row and column separately and 
+   serializes it into the appropriate key internally.
 
 9. Design Patterns are common tricks which normally enshrine good practice.
    Explain the design patterns: Delegate and Abstract Factory Explain how you
@@ -149,8 +149,31 @@ Questions
 13. What information does the system require to create a sparse matrix object?
     Remember you are building for a set of unknown customers – what will they want?
 
+    The system requires two things: size (m, n) and the elements to populate
+    a matrix with. This information can be provided in a multitude of ways.
+    Firstly an array of arrays can be provided and the size and non-zero elements
+    will be pulled from that. Secondly size can be provided and then a code block
+    that returns the value for element (i, j). Finally there are several other
+    helper methods to assist in building common matrixes, like the identity matrix
+    of size n or a scalar matrix of size n and value x.
+
 14. What are the important quality characteristics of a sparse matrix package?
     Reusability? Efficiency? Efficiency of what?
+
+    Both reusability and efficiency are important for a sparse matrix, but out of
+    the two efficiency is the most important. This is because sparse matrix is
+    already a speciallized form of a matrix, and as you become more and more
+    specialized reusability goes down. Efficiency on the other hand is the sole
+    purpose of the creation of a sparse matrix class. Primarily efficiency in
+    storage as the ratio of 0 to non-0 elements increases. Efficiency in
+    algorithm run-time is also important to sparse matrices as their sparsity
+    lends itself to implementing more specialized algorithms than the generic
+    matrix ones. This is particullarly important in matrix arithmetic like
+    addition and subtraction where adding the non-zero elements would be much
+    easier and faster than adding every element.
+    
+    Other important qualities involve having ways to quickly access and
+    enumerate only the non-zero elements.
 
 15. How do we generalize 2-D matrices to n-D matrices, where n > 2 – um, sounds
     like an extensible design?
