@@ -6,22 +6,22 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def setup
 		assert_nothing_raised do
 				@m = TridiagonalMatrix[
-				[2, 3, 0, 0, 0, 0],
-				[1, 2, 3, 0, 0, 0],
-				[0, 1, 2, 3, 0, 0],
-				[0, 0, 1, 2, 3, 0],
-				[0, 0, 0, 1, 2, 3],
-				[0, 0, 0, 0, 1, 2]
+					[2, 3, 0, 0, 0, 0],
+					[1, 2, 3, 0, 0, 0],
+					[0, 1, 2, 3, 0, 0],
+					[0, 0, 1, 2, 3, 0],
+					[0, 0, 0, 1, 2, 3],
+					[0, 0, 0, 0, 1, 2]
 			]
 		end
 		@rm = Matrix[
-		[2, 3, 0, 0, 0, 0],
-		[1, 2, 3, 0, 0, 0],
-		[0, 1, 2, 3, 0, 0],
-		[0, 0, 1, 2, 3, 0],
-		[0, 0, 0, 1, 2, 3],
-		[0, 0, 0, 0, 1, 2]
-	]
+			[2, 3, 0, 0, 0, 0],
+			[1, 2, 3, 0, 0, 0],
+			[0, 1, 2, 3, 0, 0],
+			[0, 0, 1, 2, 3, 0],
+			[0, 0, 0, 1, 2, 3],
+			[0, 0, 0, 0, 1, 2]
+		]
 	end
 
 	def test_create
@@ -66,6 +66,10 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_alias_method(@m, :collect, :map)
 	end
 
+	def test_empty
+		assert_false(@m.empty?)
+	end
+
 	def test_equivalence
 		assert_equal(@m, @rm)
 		assert_equal(@rm, @m)
@@ -100,10 +104,11 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equal(0, @m[5, 3])
 	end
 
-	def test_diagonals
+	def test_accessors
 		assert_equal(Vector[3, 3, 3, 3, 3], @m.upper_diagonal)
 		assert_equal(Vector[2, 2, 2, 2, 2, 2], @m.middle_diagonal)
 		assert_equal(Vector[1, 1, 1, 1, 1], @m.lower_diagonal)
+		assert_equal(6, @m.row_count)
 	end
 
 	def test_solve
@@ -120,5 +125,18 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 			[0, 0, 0, 1, 2, 3],
 			[0, 0, 0, 0, 1, 2]
 		], @m.to_a)
+	end
+
+	def test_transpose
+		a = [
+			[2, 3, 0, 0, 0, 0],
+			[1, 2, 3, 0, 0, 0],
+			[0, 1, 2, 3, 0, 0],
+			[0, 0, 1, 2, 3, 0],
+			[0, 0, 0, 1, 2, 3],
+			[0, 0, 0, 0, 1, 2]
+		]
+		assert_equal(@m.transpose, @rm.transpose)
+		assert_equal(@m.transpose, a.transpose)
 	end
 end
