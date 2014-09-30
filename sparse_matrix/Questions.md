@@ -154,3 +154,16 @@ Questions
 
 15. How do we generalize 2-D matrices to n-D matrices, where n > 2 – um, sounds
     like an extensible design?
+
+    Matrices can be generalized into n-D matrices by having having the nth-D
+    matrix be a collection a (n-1)-D matrices. This is comparable to having an
+    array of arrays of arrays of arrays... up until there is n levels of arrays.
+    Or for the case of a collection of key-value-pairs for a SparseMatrix you could
+    format the key to be the comma-seperated list of indices used to access an element.
+    Or create hash of hashes of hashes etc like the arrays mentioned previously.
+    
+    This would require some major algorithm and contract changes. Such as having the
+    element accessor (:[]) accept *args, and then evaluating the length of the args
+    to see if it matches the current dimension of the matrix. Most of the algorithms
+    would also need to be recursive or iterative up to n times to accomadiate the 
+    variable dimension length of the matrix.
