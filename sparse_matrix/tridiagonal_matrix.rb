@@ -9,12 +9,14 @@ module ExceptionForTridiagionalMatrix
 	def_exception('ErrNotTridiagonal', 'Not Tridiagonal Matrix')
 end
 
-class TridiagonalMatrix < Matrix
+class TridiagonalMatrix
 
 	include ExceptionForTridiagionalMatrix
 	extend Forwardable
 
 	delegate [:+, :*, :**, :/, :-] => :to_m
+
+	public
 
 	def initialize(upper, middle, lower)
 		@upper_diagonal = upper
@@ -64,25 +66,17 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def ==(other)
-		if other.respond_to?(:each_with_index) && other.method(:[]).arity == 2
-			result = true
-			other.each_with_index { |x, i, j| result &&= (self[i, j] == x) }
-			result
-		else
-			false
-		end
+		return false unless other.respond_to?(:zip)
+		zip(other).each.reduce(true) { |result, x| result && (x[1] == x[0]) }
 	end
 
 	def eql?(other)
-		if other.respond_to?(:upper_diagonal) &&
+		return false unless other.respond_to?(:upper_diagonal) &&
 			other.respond_to?(:middle_diagonal) &&
 			other.respond_to?(:lower_diagonal)
-			(upper_diagonal.eql?(other.upper_diagonal) &&
-				middle_diagonal.eql?(other.middle_diagonal) &&
-				lower_diagonal.eql?(other.lower_diagonal))
-		else
-			false
-		end
+		(upper_diagonal.eql?(other.upper_diagonal) &&
+			middle_diagonal.eql?(other.middle_diagonal) &&
+			lower_diagonal.eql?(other.lower_diagonal))
 	end
 
 	def hash
@@ -100,29 +94,21 @@ class TridiagonalMatrix < Matrix
 
 	def row(i)
 		return self unless i < row_count
-		r = []
-		column_count.times do |j|
-			r << self[i, j]
-		end
-		r.each(&Proc.new) if block_given?
-		Vector.elements(r)
+		row = Array.new(row_count) { |j| self[i, j] }
+		row.each(&Proc.new) if block_given?
+		Vector.elements(row, false)
 	end
 
 	def column(j)
 		return self unless j < column_count
-		c = []
-		row_count.times do |i|
-			c <<  get_value(i, j)
-		end
-		c.each(&Proc.new) if block_given?
-		Vector.elements(c)
+		col = Array.new(column_count) { |i| self[i, j] }
+		col.each(&Proc.new) if block_given?
+		Vector.elements(col, false)
 	end
 
 	def each
 		return to_enum :each unless block_given?
-		each_with_index do |x|
-			yield x
-		end
+		each_with_index { |x| yield x }
 		self
 	end
 
@@ -149,11 +135,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def to_a
-		a = []
-		@middle_diagonal.size.times do |i|
-			a << row(i).to_a
-		end
-		a
+		Array.new(row_count) { |i|	row(i).to_a }
 	end
 
 	def to_m
@@ -183,15 +165,15 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def upper_diagonal
-		Vector[@upper_diagonal]
+		Vector.elements(@upper_diagonal)
 	end
 
 	def middle_diagonal
-		Vector[@middle_diagonal]
+		Vector.elements(@middle_diagonal)
 	end
 
 	def lower_diagonal
-		Vector[@lower_diagonal]
+		Vector.elements(@lower_diagonal)
 	end
 
 	alias_method :column_count, :row_count
@@ -212,39 +194,33 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def c_prime
-		c = []
-		@upper_diagonal.each_with_index do |x, i|
-			if i == 0
-				c << x / @middle_diagonal[i]
+		@upper_diagonal.each_with_index.reduce([]) do |c, x|
+			if x[1] == 0
+				c << x[0] / @middle_diagonal[x[1]]
 			else
-				c << x / (@middle_diagonal[i] - @lower_diagonal[i] * c.last)
+				c << x[0] / (@middle_diagonal[x[1]] - @lower_diagonal[x[1]] * c.last)
 			end
 		end
-		c
 	end
 
 	def d_prime(vec, c)
-		d = []
-		vec.each_with_index do |x, i|
-			if i == 0
-				d << x / @middle_diagonal[i]
+		vec.each_with_index.reduce([]) do |d, x|
+			if x[1] == 0
+				d << x[0] / @middle_diagonal[x[1]]
 			else
-				d << (x - @lower_diagonal[i - 1] * d.last) /
-					(@middle_diagonal[i] - @lower_diagonal[i - 1] * c[i - 1])
+				d << (x[0] - @lower_diagonal[x[1] - 1] * d.last) /
+					(@middle_diagonal[x[1]] - @lower_diagonal[x[1] - 1] * c[x[1] - 1])
 			end
 		end
-		d
 	end
 
 	def x_prime(c, d)
-		x = []
-		(d.size - 1).downto(0) do |i|
+		(d.size - 1).downto(0).reduce([]) do |x, i|
 			if i == d.size - 1
 				x << d[i]
 			else
 				x << d[i] - c[i] * x.last
 			end
 		end
-		x
 	end
 end
