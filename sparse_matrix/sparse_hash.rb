@@ -28,7 +28,7 @@ class SparseHash < Hash
 	Contract RespondTo[:to_i], Any => Any
 	def []=(k,v)
 		k = k.to_i
-		super(k, v) if k.between?(0, size-1)
+		v == default_proc.call(self, k) ? delete(k) : super(k,v)
 	end
 
 	Contract RespondTo[:to_i] => Any
@@ -37,6 +37,23 @@ class SparseHash < Hash
 		k += size if k < 0
 		super(k)
 	end
+
+	# Contract RespondTo[:to_i], RespondTo[:to_i] => SparseHash
+	# def [](i, j)
+	# 	i, j = i.to_i, j.to_i
+	# 	i += size if i < 0
+	# 	j += size if j < 0
+	# 	return {} if 
+	# 	h = SparseHash.new(j - i)
+	# end
+
+	# Contract And[RespondTo[:max], RespondTo[:min]] => SparseHash
+	# def [](range)
+	# 	h = SparseHash.new(range.size, 0)
+	# 	h.default_proc = &self.default_proc
+	# end
+
+	# alias_method :slice, :[]
 
 	Contract RespondTo[:to_i], Maybe[Func[Any => Any]] => Any
 	def fetch(i)

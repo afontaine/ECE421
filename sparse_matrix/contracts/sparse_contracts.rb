@@ -26,4 +26,24 @@ module SparseContracts
 			"Enumerable (:each) of #{@contract}"
 		end
 	end
+
+	class RangeOrInt
+		def valid?(val)
+			return false unless val.respond_to? :each
+
+			case val.size
+			when 1
+				val = val[0]
+				val.respond_to?(:to_i) || (val.respond_to?(:min) && val.respond_to?(:max))
+			when 2
+				val.all? { |v| respond_to? :to_i }
+			else
+				false
+			end
+		end
+
+		def to_s
+			"Expected argument of size 1..2, of either a Range or Int"
+		end
+	end
 end

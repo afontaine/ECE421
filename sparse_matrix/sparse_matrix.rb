@@ -4,6 +4,7 @@ require_relative 'sparse_hash'
 require_relative 'contracts\sparse_contracts'
 
 class SparseMatrix < Matrix
+	include Enumerable
 	include Contracts
 	include SparseContracts
 
@@ -17,7 +18,7 @@ class SparseMatrix < Matrix
 		rows.each_with_index do |row,i|
 			row_h = rows_h[i]
 			row.each_with_index do |val,j|
-				row_h[j] = val unless val == 0 || val.nil?
+				row_h[j] = val
 			end
 			rows_h[i] = row_h if row_h.length > 0
 		end
@@ -49,6 +50,7 @@ class SparseMatrix < Matrix
 
 	Contract RespondTo[:to_i] => Maybe[Vector]
 	def row(i)
+		i = i.to_i
 		return nil unless i.abs.between?(0, row_count-1)
 		Vector.elements(Array.new(column_count) { |j| self[i,j] })
 	end
@@ -73,22 +75,26 @@ class SparseMatrix < Matrix
 	Contract Or[Symbol, Func[Any => Any], nil] => Or[Enumerator, SparseMatrix]
 	def each(which = :all)
 		return to_enum :each, which unless block_given?
-		block = Proc.new
 		if which == :non_zero
-			@rows.each(false, &block)
+			@rows.each(false) do |row|
+				row.each(false) { |v| yield v }
+			end
+			self
 		else
-			super(which, &block)
+			super(which, &Proc.new)
 		end
 	end
 
 	Contract Or[Symbol, Func[Any => Any], nil]  => Or[Enumerator, SparseMatrix]
 	def each_with_index(which = :all)
 		return to_enum :each_with_index, which unless block_given?
-		block = Proc.new
 		if which == :non_zero
-			@rows.each_with_index(false, &block)
+			@rows.each_with_index(false) do |row, i|
+				row.each_with_index(false) { |value, j| yield value, i, j }
+			end
+			self
 		else
-			super(which, &block)
+			super(which, &Proc.new)
 		end
 	end
 end
