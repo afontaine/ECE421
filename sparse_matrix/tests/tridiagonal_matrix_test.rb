@@ -255,4 +255,14 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def test_symmetric
 		assert_false(@m.symmetric?)
 	end
+
+	def test_each
+		assert_equals([2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2], @m.each(:tridiagonal).reduce([]) { |a, e| a << e })
+		assert_equals(@rm.each(:upper).reduce([]) { |a, e| a << e }, @m.each(:upper).reduce([]) { |a, e| a << e })
+		assert_equals(@rm.each(:strict_upper).reduce([]) { |a, e| a << e }, @m.each(:strict_upper).reduce([]) { |a, e| a << e })
+		assert_equals(@rm.each(:lower).reduce([]) { |a, e| a << e }, @m.each(:lower).reduce([]) { |a, e| a << e })
+		assert_equals(@rm.each(:strict_lower).reduce([]) { |a, e| a << e }, @m.each(:strict_lower).reduce([]) { |a, e| a << e })
+		assert_equals(@rm.each(:diagonal).reduce([]) { |a, e| a << e }, @m.each(:diagonal).reduce([]) { |a, e| a << e })
+		assert_equals(@rm.each(:off_diagonal).reduce([]) { |a, e| a << e }, @m.each(:off_diagonal).reduce([]) { |a, e| a << e })
+	end
 end
