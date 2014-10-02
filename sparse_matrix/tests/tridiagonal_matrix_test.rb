@@ -265,4 +265,8 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equals(@rm.each(:diagonal).reduce([]) { |a, e| a << e }, @m.each(:diagonal).reduce([]) { |a, e| a << e })
 		assert_equals(@rm.each(:off_diagonal).reduce([]) { |a, e| a << e }, @m.each(:off_diagonal).reduce([]) { |a, e| a << e })
 	end
+
+	def test_inverse
+		assert_equals(@rm.inverse, @m.inverse)
+	end
 end
