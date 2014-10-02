@@ -247,4 +247,8 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def test_toeplitz
 		assert_true(@m.toeplitz?)
 	end
+
+	def test_upper_triangular
+		assert_false(@m.upper_triangular?)
+	end
 end
