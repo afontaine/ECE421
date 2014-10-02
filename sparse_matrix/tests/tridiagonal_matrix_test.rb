@@ -243,4 +243,8 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def test_to_m
 		assert_true(@rm.eql?(@m.to_m))
 	end
+
+	def test_toeplitz
+		assert_true(@m.toeplitz?)
+	end
 end
