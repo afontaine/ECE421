@@ -22,6 +22,24 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 			[0, 0, 0, 1, 2, 3],
 			[0, 0, 0, 0, 1, 2]
 		]
+
+		@test_m = Matrix.build(6) { |x| x }
+
+		invariants
+	end
+
+	def teardown
+		invariants
+	end
+
+	def invariants
+		assert_compare(0, "<", @m.row_count)
+		assert_equal(@m.row_count, @m.colunn_count)
+		assert_true(@m.square?)
+		assert_true(@m.each_with_index.reduce(true) do |a, x|
+			return o && x[0] == 0 unless (x[2] - 1..x[2] + 1) === x[1]
+			o
+		end)
 	end
 
 	def test_create
