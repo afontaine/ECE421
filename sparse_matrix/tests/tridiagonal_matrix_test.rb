@@ -220,4 +220,8 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equal(@test_m / @rm, @test_m / @m)
 		assert_raise(TridiagonalMatrix::ErrOperationNotDefined) { @m / "Yep, wrong"}
 	end
+
+	def test_trace
+		assert_equal(12, @m.trace)
+	end
 end
