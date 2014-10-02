@@ -251,4 +251,8 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def test_upper_triangular
 		assert_false(@m.upper_triangular?)
 	end
+
+	def test_symmetric
+		assert_false(@m.symmetric?)
+	end
 end
