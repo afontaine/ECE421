@@ -1,12 +1,16 @@
 require 'matrix'
 require 'contracts'
+require 'test/unit'
 require_relative 'sparse_hash'
 require_relative 'contracts\sparse_contracts'
+require_relative 'contracts\invariant'
 
 class SparseMatrix < Matrix
 	include Enumerable
 	include Contracts
+	include Invariant
 	include SparseContracts
+	include Test::Unit::Assertions
 
 	attr_reader :row_count
 
@@ -96,5 +100,17 @@ class SparseMatrix < Matrix
 		else
 			super(which, &Proc.new)
 		end
+	end
+
+	Contract Args[Or[RespondTo[:to_i], RespondTo[:each]]] => SparseMatrix
+	def minor(*args)
+		SparseMatrix.rows(to_m.minor(*args).to_a)
+	end
+
+	Invariant.invariant(self, :get, :set, :[], :[]=, :row, :column, :+, :/, :*, :transpose, :each) do
+		assert(@row_count >= 0)
+		assert(@column_count >= 0)
+		assert_equal(@rows[0].size, @column_count)
+		assert_equal(@rows.size, @row_count)
 	end
 end

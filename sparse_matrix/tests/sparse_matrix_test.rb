@@ -14,32 +14,6 @@ class TestSparseMatrix < Test::Unit::TestCase
 
     @m5 = SparseMatrix[[1,0,0], [0,0,0]]
     @m6 = SparseMatrix[[1,0,0], [0,0,0], [0,0,2]]
-
-    invariants()
-  end
-
-  def teardown
-    invariants()
-  end
-
-  def invariants
-    assert(@m1.row_count >= 0)
-    assert(@m1.column_count >= 0)
-
-    assert(@m2.row_count >= 0)
-    assert(@m2.column_count >= 0)
-
-    assert(@m3.row_count >= 0)
-    assert(@m3.column_count >= 0)
-
-    assert(@m4.row_count >= 0)
-    assert(@m4.column_count >= 0)
-
-    assert(@m5.row_count >= 0)
-    assert(@m5.column_count >= 0)
-
-    assert(@m6.row_count >= 0)
-    assert(@m6.column_count >= 0)
   end
 
   # begin Ruby 2.0.0 matrix test library
