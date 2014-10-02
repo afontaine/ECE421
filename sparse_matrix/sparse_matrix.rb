@@ -8,9 +8,9 @@ require_relative 'contracts\invariant'
 class SparseMatrix < Matrix
 	include Enumerable
 	include Contracts
-	include Invariant
 	include SparseContracts
 	include Test::Unit::Assertions
+	extend Invariant
 
 	attr_reader :row_count
 
@@ -107,7 +107,7 @@ class SparseMatrix < Matrix
 		SparseMatrix.rows(to_m.minor(*args).to_a)
 	end
 
-	Invariant.invariant(self, :get, :set, :[], :[]=, :row, :column, :+, :/, :*, :transpose, :each) do
+	invariant(:get, :set, :[], :[]=, :row, :column, :+, :/, :*, :transpose, :each) do
 		assert(@row_count >= 0)
 		assert(@column_count >= 0)
 		assert_equal(@rows[0].size, @column_count)
