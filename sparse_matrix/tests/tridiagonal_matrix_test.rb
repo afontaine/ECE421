@@ -234,4 +234,9 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 				[0, 0, 0, 3, 2, 1],
 				[0, 0, 0, 0, 3, 2]], @m.transpose)
 	end
+
+	def test_to_s
+		assert_equal('TridiagonalMatrix[[2, 3, 0, 0, 0, 0], [1, 2, 3, 0, 0, 0], [0, 1, 2, 3, 0, 0], [0, 0, 1, 2, 3, 0],'\
+		' [0, 0, 0, 1, 2, 3], [0, 0, 0, 0, 1, 2]]', @m.to_s)
+	end
 end
