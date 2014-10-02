@@ -206,4 +206,18 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equal(@rm.inverse, @m * -1)
 		assert_raise(TridiagonalMatrix::ErrOperationNotDefined) { @m ** "Still wrong"}
 	end
+
+	def test_div
+		assert_equal(Matrix.I(6), @m / @m)
+		assert_equal(TridiagonalMatrix[
+				[Rational(2,2), Rational(3,2), 0, 0, 0, 0],
+				[Rational(1,2), Rational(2,2), Rational(3,2), 0, 0, 0],
+				[0, Rational(1,2), Rational(2,2), Rational(3,2), 0, 0],
+				[0, 0, Rational(1,2), Rational(2,2), Rational(3,2), 0],
+				[0, 0, 0, Rational(1,2), Rational(2,2), Rational(3,2)],
+				[0, 0, 0, 0, Rational(1,2), Rational(2,2)]], @m / 2)
+		assert_equal(@rm / @test_m, @m / @test_m)
+		assert_equal(@test_m / @rm, @test_m / @m)
+		assert_raise(TridiagonalMatrix::ErrOperationNotDefined) { @m / "Yep, wrong"}
+	end
 end
