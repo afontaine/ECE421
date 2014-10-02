@@ -173,4 +173,31 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_false(@m.singular?)
 		assert_true(@m.regular?)
 	end
+
+	def test_mul
+		assert_equal(TridiagonalMatrix[
+				[2, 3, 0, 0, 0, 0],
+				[1, 2, 3, 0, 0, 0],
+				[0, 1, 2, 3, 0, 0],
+				[0, 0, 1, 2, 3, 0],
+				[0, 0, 0, 1, 2, 3],
+				[0, 0, 0, 0, 1, 2]], @m * Matrix.I(6))
+		assert_equal(TridiagonalMatrix[
+				[4, 6, 0, 0, 0, 0],
+				[2, 4, 6, 0, 0, 0],
+				[0, 2, 4, 6, 0, 0],
+				[0, 0, 2, 4, 6, 0],
+				[0, 0, 0, 2, 4, 6],
+				[0, 0, 0, 0, 2, 4]], @m * 2)
+		assert_equal(Matrix[
+			[13, 8, 3, 0, 0, 0],
+			[8, 14, 8, 3, 0, 0],
+			[3, 8, 14, 8, 3, 0],
+			[0, 3, 8, 14, 8, 3],
+			[0, 0, 3, 8, 14, 8],
+			[0, 0, 0, 3, 8, 5]], @m * @m.transpose)
+		assert_equal(@rm * @test_m, @m * @test_m)
+		assert_equal(@test_m * @rm, @test_m * @m)
+		assert_raise(TypeError) { @m * "This is wrong" }
+	end
 end
