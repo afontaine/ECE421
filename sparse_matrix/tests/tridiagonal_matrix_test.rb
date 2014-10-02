@@ -157,4 +157,15 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equal(@m.transpose, @rm.transpose)
 		assert_equal(@m.transpose, a.transpose)
 	end
+
+	def test_collect
+		assert_equal(TridiagonalMatrix[
+				[4, 6, 0, 0, 0, 0],
+				[2, 4, 6, 0, 0, 0],
+				[0, 2, 4, 6, 0, 0],
+				[0, 0, 2, 4, 6, 0],
+				[0, 0, 0, 2, 4, 6],
+				[0, 0, 0, 0, 2, 4]
+			], @m.map { |x| x*2 })
+	end
 end
