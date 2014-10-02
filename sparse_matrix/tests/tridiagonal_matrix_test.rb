@@ -224,4 +224,14 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def test_trace
 		assert_equal(12, @m.trace)
 	end
+
+	def test_transpose
+		assert_equal(TridiagonalMatrix[
+				[2, 1, 0, 0, 0, 0],
+				[3, 2, 1, 0, 0, 0],
+				[0, 3, 2, 1, 0, 0],
+				[0, 0, 3, 2, 1, 0],
+				[0, 0, 0, 3, 2, 1],
+				[0, 0, 0, 0, 3, 2]], @m.transpose)
+	end
 end
