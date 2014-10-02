@@ -168,4 +168,9 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 				[0, 0, 0, 0, 2, 4]
 			], @m.map { |x| x*2 })
 	end
+
+	def test_singluar
+		assert_false(@m.singular?)
+		assert_true(@m.regular?)
+	end
 end
