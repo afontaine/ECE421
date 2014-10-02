@@ -200,4 +200,10 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equal(@test_m * @rm, @test_m * @m)
 		assert_raise(TypeError) { @m * "This is wrong" }
 	end
+
+	def test_exp
+		assert_equal(@m * @m, @m ** 2)
+		assert_equal(@rm.inverse, @m * -1)
+		assert_raise(TridiagonalMatrix::ErrOperationNotDefined) { @m ** "Still wrong"}
+	end
 end
