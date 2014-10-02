@@ -239,4 +239,8 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 		assert_equal('TridiagonalMatrix[[2, 3, 0, 0, 0, 0], [1, 2, 3, 0, 0, 0], [0, 1, 2, 3, 0, 0], [0, 0, 1, 2, 3, 0],'\
 		' [0, 0, 0, 1, 2, 3], [0, 0, 0, 0, 1, 2]]', @m.to_s)
 	end
+
+	def test_to_m
+		assert_true(@rm.eql?(@m.to_m))
+	end
 end
