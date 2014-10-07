@@ -36,7 +36,7 @@ class MatrixFactoryTest < Test::Unit::TestCase
 		m = MatrixFactory.create(TridiagonalMatrix, rows)
 		assert_instance_of(TridiagonalMatrix, m)
     assert_false(m.instance_of? Matrix)
-		assert_not_kind_of(Matrix, m)
+		assert_kind_of(Matrix, m)
 
     assert_raise(Contract::ContractError) do
       MatrixFactory.create(Array, [[1, 2, 3],[2,3,4]])
@@ -61,6 +61,6 @@ class MatrixFactoryTest < Test::Unit::TestCase
 		m = MatrixFactory.build(TridiagonalMatrix, 4, 4) { |row, col| row * col}
 		assert_instance_of(TridiagonalMatrix, m)
     assert_false(m.instance_of? Matrix)
-		assert_not_kind_of(Matrix, m)
+		assert_kind_of(Matrix, m)
 	end
 end
