@@ -1,6 +1,6 @@
 require 'test/unit'
 
-class MatrixFactoryTests < Test::Unit::TestCase
+class MatrixFactoryTest < Test::Unit::TestCase
 
 	def test_create
 		rows = [

@@ -2,7 +2,7 @@ require 'test/unit'
 require 'matrix'
 require_relative '../tridiagonal_matrix'
 
-class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
+class TridiagonalMatrixTest < Test::Unit::TestCase
 	def setup
 		assert_nothing_raised do
 				@m = TridiagonalMatrix[
@@ -34,11 +34,10 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 
 	def invariants
 		assert_compare(0, "<", @m.row_count)
-		assert_equal(@m.row_count, @m.colunn_count)
+		assert_equal(@m.row_count, @m.column_count)
 		assert_true(@m.square?)
 		assert_true(@m.each_with_index.reduce(true) do |a, x|
-			return o && x[0] == 0 unless (x[2] - 1..x[2] + 1) === x[1]
-			o
+			a && ((x[0] == 0) || ((x[2] - 1..x[2] + 1) === x[1] ))
 		end)
 	end
 
@@ -90,7 +89,6 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 
 	def test_equivalence
 		assert_equal(@m, @rm)
-		assert_equal(@rm, @m)
 		assert_equal(TridiagonalMatrix[
 			[2, 3, 0, 0, 0, 0],
 			[1, 2, 3, 0, 0, 0],
@@ -203,7 +201,7 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 
 	def test_exp
 		assert_equal(@m * @m, @m ** 2)
-		assert_equal(@rm.inverse, @m * -1)
+		assert_equal(@rm.inverse, @m ** -1)
 		assert_raise(TridiagonalMatrix::ErrOperationNotDefined) { @m ** "Still wrong"}
 	end
 
@@ -257,16 +255,16 @@ class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	end
 
 	def test_each
-		assert_equals([2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2], @m.each(:tridiagonal).reduce([]) { |a, e| a << e })
-		assert_equals(@rm.each(:upper).reduce([]) { |a, e| a << e }, @m.each(:upper).reduce([]) { |a, e| a << e })
-		assert_equals(@rm.each(:strict_upper).reduce([]) { |a, e| a << e }, @m.each(:strict_upper).reduce([]) { |a, e| a << e })
-		assert_equals(@rm.each(:lower).reduce([]) { |a, e| a << e }, @m.each(:lower).reduce([]) { |a, e| a << e })
-		assert_equals(@rm.each(:strict_lower).reduce([]) { |a, e| a << e }, @m.each(:strict_lower).reduce([]) { |a, e| a << e })
-		assert_equals(@rm.each(:diagonal).reduce([]) { |a, e| a << e }, @m.each(:diagonal).reduce([]) { |a, e| a << e })
-		assert_equals(@rm.each(:off_diagonal).reduce([]) { |a, e| a << e }, @m.each(:off_diagonal).reduce([]) { |a, e| a << e })
+		assert_equal([2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2], @m.each(:tridiagonal).reduce([]) { |a, e| a << e })
+		assert_equal(@rm.each(:upper).reduce([]) { |a, e| a << e }, @m.each(:upper).reduce([]) { |a, e| a << e })
+		assert_equal(@rm.each(:strict_upper).reduce([]) { |a, e| a << e }, @m.each(:strict_upper).reduce([]) { |a, e| a << e })
+		assert_equal(@rm.each(:lower).reduce([]) { |a, e| a << e }, @m.each(:lower).reduce([]) { |a, e| a << e })
+		assert_equal(@rm.each(:strict_lower).reduce([]) { |a, e| a << e }, @m.each(:strict_lower).reduce([]) { |a, e| a << e })
+		assert_equal(@rm.each(:diagonal).reduce([]) { |a, e| a << e }, @m.each(:diagonal).reduce([]) { |a, e| a << e })
+		assert_equal(@rm.each(:off_diagonal).reduce([]) { |a, e| a << e }, @m.each(:off_diagonal).reduce([]) { |a, e| a << e })
 	end
 
 	def test_inverse
-		assert_equals(@rm.inverse, @m.inverse)
+		assert_equal(@rm.inverse, @m.inverse)
 	end
 end
