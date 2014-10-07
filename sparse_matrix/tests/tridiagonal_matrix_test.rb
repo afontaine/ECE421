@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'matrix'
-require_relative '../tridiagonal_matrix'
+require_relative '../data/tridiagonal_matrix'
 
 class TridiagonalMatrixFactoryTest < Test::Unit::TestCase
 	def setup

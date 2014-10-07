@@ -1,6 +1,6 @@
 require 'contracts'
 require 'test/unit'
-require_relative 'contracts/sparse_contracts'
+require_relative '../contracts/sparse_contracts'
 
 class SparseHash < Hash
 	include Contracts
@@ -43,7 +43,7 @@ class SparseHash < Hash
 	# 	i, j = i.to_i, j.to_i
 	# 	i += size if i < 0
 	# 	j += size if j < 0
-	# 	return {} if 
+	# 	return {} if
 	# 	h = SparseHash.new(j - i)
 	# end
 

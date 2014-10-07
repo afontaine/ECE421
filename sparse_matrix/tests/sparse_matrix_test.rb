@@ -1,5 +1,4 @@
 require 'test/unit'
-require 'matrix'
 require_relative '../sparse_matrix.rb'
 
 # Majority of tests taken from Ruby 2.0 test library at 

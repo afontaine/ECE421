@@ -1,4 +1,5 @@
 require 'test/unit'
+require_relative '../sparse_matrix'
 
 class MatrixFactoryTests < Test::Unit::TestCase
 
@@ -11,16 +12,16 @@ class MatrixFactoryTests < Test::Unit::TestCase
 			[0,0,0,0,99]
 		]
 
-		m = MatrixFactory.create(rows)
+		m = MatrixFactory.create(Matrix, rows)
 
 		assert_instance_of(Matrix, m)
-		assert_not_instance_of(SparseMatrix, m)
+		assert_false(m.instance_of? SparseMatrix)
 		assert_not_nil(m)
 
-		m = MatrixFactory.create(rows, SparseMatrix)
+		m = MatrixFactory.create(SparseMatrix, rows)
 
 		assert_instance_of(SparseMatrix, m)
-		assert_not_instace_of(Matrix, m)
+    assert_false(m.instance_of? Matrix)
 		assert_kind_of(Matrix, m)
 
 		rows = [
@@ -32,26 +33,34 @@ class MatrixFactoryTests < Test::Unit::TestCase
 			[0, 0, 0, 0, 1, 2]
 		]
 
-		m = MatrixFactory.create(rows, TridiagonalMatrix)
+		m = MatrixFactory.create(TridiagonalMatrix, rows)
 		assert_instance_of(TridiagonalMatrix, m)
-		assert_not_instace_of(Matrix, m)
+    assert_false(m.instance_of? Matrix)
 		assert_not_kind_of(Matrix, m)
+
+    assert_raise(Contract::ContractError) do
+      MatrixFactory.create(Array, [[1, 2, 3],[2,3,4]])
+    end
+
+    assert_raise(Contract::ContractError) do
+      MatrixFactory.create(SparseMatrix, [1, 2, 3, 2,3,4])
+    end
 	end
 
 	def test_build
-		m = MatrixFactory.build(4, 4, Matrix) { |row, col| row * col}
+		m = MatrixFactory.build(Matrix, 4, 4) { |row, col| row * col}
 		assert_instance_of(Matrix, m)
-		assert_not_instance_of(SparseMatrix, m)
+    assert_false(m.instance_of? SparseMatrix)
 		assert_not_nil(m)
 
-		m = MatrixFactory.build(4, 4, SparseMatrix) { |row, col| row * col}
+		m = MatrixFactory.build(SparseMatrix, 4) { |row, col| row * col}
 		assert_instance_of(SparseMatrix, m)
-		assert_not_instace_of(Matrix, m)
+    assert_false(m.instance_of? Matrix)
 		assert_kind_of(Matrix, m)
 
-		m = MatrixFactory.build(4, 4, TridiagonalMatrix) { |row, col| row * col}
+		m = MatrixFactory.build(TridiagonalMatrix, 4, 4) { |row, col| row * col}
 		assert_instance_of(TridiagonalMatrix, m)
-		assert_not_instace_of(Matrix, m)
+    assert_false(m.instance_of? Matrix)
 		assert_not_kind_of(Matrix, m)
 	end
 end

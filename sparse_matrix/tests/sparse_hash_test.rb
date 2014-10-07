@@ -1,37 +1,35 @@
 require 'test/unit'
-require 'matrix'
-require 'contracts'
-require_relative '../sparse_hash.rb'
+require_relative '../sparse_matrix.rb'
 
 class SparseHashTests < Test::Unit::TestCase
 	def setup
 		@h1 = build_hash([10,5,0,0,0,9,-5,0,9,0], 0)
 
-		@h2 = build_multihash([
+		@h2 = build_multi_hash([
 			[2, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 3, 0, 0],
 			[0, 0, 0, 0, 0, 0],
 			[0, -4, 0, 0, 0, 0],
 			[0, 0, 0, 0, 1, 0]
-		], 0)
+		])
 
-		@h3 = build_multihash([
+		@h3 = build_multi_hash([
 			[2, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0],
 			[0, 0, 0, 3, 0],
 			[0, 0, 0, 0, 0],
 			[0, -4, 0, 0, 0],
 			[0, 0, 0, 0, 1]
-		], 0)
+		])
 
-		@h4 = build_multihash([
+		@h4 = build_multi_hash([
 			[2, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 3, 0, 0],
 			[0, 0, 0, 0, 0, 0],
 			[0, -4, 0, 0, 0, 0]
-		], 0)
+		])
 	end
 
 
@@ -94,7 +92,7 @@ class SparseHashTests < Test::Unit::TestCase
 	end
 
 
-	def build_multihash(a)
+	def build_multi_hash(a)
 		a.each_with_index.inject(SparseHash.new(a.size) { SparseHash.new(a[0].size, 0) }) do |h,(row,i)|
 			row.each_with_index do |v,j|
 				unless v == 0
