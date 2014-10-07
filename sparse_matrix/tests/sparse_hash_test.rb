@@ -59,8 +59,8 @@ class SparseHashTests < Test::Unit::TestCase
 		h[size] = 10
 		assert_nil(h[size])
 
-		h["1"] = 10
-		assert_equal(h["1"], 10)
+		h['1'] = 10
+		assert_equal(h['1'], 10)
 		assert_equal(h[1], 10)
 	end
 

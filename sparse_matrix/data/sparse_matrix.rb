@@ -17,7 +17,7 @@ class SparseMatrix < Matrix
 	Contract EnumerableOf[RespondTo[:each_with_index]], RespondTo[:to_i] => SparseMatrix
 	def initialize(rows, column_count = rows[0].size)
 		column_count = column_count.to_i
-		rows_h = SparseHash.new(rows.size) { |h,k| SparseHash.new(column_count, 0) }
+		rows_h = SparseHash.new(rows.size) { SparseHash.new(column_count, 0) }
 
 		rows.each_with_index do |row,i|
 			row_h = rows_h[i]
