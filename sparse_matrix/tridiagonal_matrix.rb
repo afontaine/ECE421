@@ -1,15 +1,15 @@
 require 'matrix'
-require 'e2mmap.rb'
 require 'mathn'
 require 'forwardable'
+require 'e2mmap.rb'
 
 module ExceptionForTridiagionalMatrix
 	extend ExceptionForMatrix
 	extend Exception2MessageMapper
-	def_exception('ErrNotTridiagonal', 'Not Tridiagonal Matrix')
+	def_exception(:ErrNotTridiagonal, 'The matrix is not tridiagonal')
 end
 
-class TridiagonalMatrix
+class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
 	extend Forwardable
@@ -89,7 +89,7 @@ class TridiagonalMatrix
 		new_upper = @upper_diagonal.map(&block)
 		new_middle = @middle_diagonal.map(&block)
 		new_lower = @lower_diagonal.map(&block)
-		TridiagonalMatrix.new new_upper, new_middle, new_lower
+		TridiagonalMatrix.send(:new, new_upper, new_middle, new_lower)
 	end
 
 	def row(i)
@@ -106,13 +106,13 @@ class TridiagonalMatrix
 		Vector.elements(col, false)
 	end
 
-	def each
+	def each(which = :all)
 		return to_enum :each unless block_given?
 		each_with_index { |x| yield x }
 		self
 	end
 
-	def each_with_index
+	def each_with_index(which = :all)
 		return to_enum :each_with_index unless block_given?
 		row_count.times do |i|
 			column_count.times do |j|
@@ -124,6 +124,14 @@ class TridiagonalMatrix
 
 	def square?
 		true
+	end
+
+	def toeplitz?
+		@upper_diagonal.reduce(true) { |a, e| a && e == @upper_diagonal[0] }
+	end
+
+	def symmetric?
+		self == transpose
 	end
 
 	def row_count
@@ -140,6 +148,15 @@ class TridiagonalMatrix
 
 	def to_m
 		Matrix.rows(to_a, false)
+	end
+
+	def transpose!
+		@upper_diagonal, @lower_diagonal = @lower_diagonal, @upper_diagonal
+		self
+	end
+
+	def transpose
+		TridiagonalMatrix.send(:new, @lower_diagonal, @middle_diagonal, @upper_diagonal)
 	end
 
 	def solve(vec)
