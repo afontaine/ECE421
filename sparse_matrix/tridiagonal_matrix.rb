@@ -122,6 +122,17 @@ class TridiagonalMatrix < Matrix
 		self
 	end
 
+	def coerce(other)
+		[other, to_m]
+	end
+
+	def rows
+		to_m.rows
+	end
+
+	def inverse
+	end
+
 	def square?
 		true
 	end
@@ -211,33 +222,29 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def c_prime
-		@upper_diagonal.each_with_index.reduce([]) do |c, x|
-			if x[1] == 0
-				c << x[0] / @middle_diagonal[x[1]]
-			else
-				c << x[0] / (@middle_diagonal[x[1]] - @lower_diagonal[x[1]] * c.last)
-			end
+		@upper_diagonal[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal)\
+			.reduce([@upper_diagonal[0] / @middle_diagonal[0]]) do |c, x|
+			c << x[0] / (x[1] - x[2] * c.last)
 		end
 	end
 
 	def d_prime(vec, c)
-		vec.each_with_index.reduce([]) do |d, x|
-			if x[1] == 0
-				d << x[0] / @middle_diagonal[x[1]]
-			else
-				d << (x[0] - @lower_diagonal[x[1] - 1] * d.last) /
-					(@middle_diagonal[x[1]] - @lower_diagonal[x[1] - 1] * c[x[1] - 1])
-			end
+		vec[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal, c).reduce([vec[0] / @middle_diagonal[0]]) do |d, x|
+			d << (x[0] - x[2] * d.last) /
+				(x[1] - x[2] * x[3])
 		end
 	end
 
 	def x_prime(c, d)
-		(d.size - 1).downto(0).reduce([]) do |x, i|
-			if i == d.size - 1
-				x << d[i]
-			else
-				x << d[i] - c[i] * x.last
-			end
+		d[0..-2].reverse.zip(c.reverse).reduce([d.last]) do |x, d_c|
+			x << d_c[0] - d_c[1] * x.last
+		end
+	end
+
+	def theta
+		@middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal)\
+			.reduce([1, @middle_diagonal[0]]) do |thet, x|
+			thet << x[0] * thet[-1] - x[1] * x[2] * thet[-2]
 		end
 	end
 end
