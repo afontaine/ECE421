@@ -1,7 +1,7 @@
 require 'test/unit'
 require_relative '../sparse_matrix'
 
-class MatrixFactoryTests < Test::Unit::TestCase
+class MatrixFactoryTest < Test::Unit::TestCase
 
 	def test_create
 		rows = [
