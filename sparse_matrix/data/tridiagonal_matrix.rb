@@ -125,23 +125,27 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def each(which = :all)
-		return to_enum :each unless block_given?
-		each_with_index { |x| yield x }
+		return to_enum :each, which unless block_given?
+		each_with_index(which) { |x| yield x }
 		self
 	end
 
 	def each_with_index(which = :all)
-		return to_enum :each_with_index unless block_given?
-		row_count.times do |i|
-			column_count.times do |j|
-				yield self[i, j], i, j
+		return to_enum :each_with_index, which unless block_given?
+		if which == :tridiagonal
+			row_count.times do |i|
+				yield @lower_diagonal[i - 1], i, i - 1 if i > 0
+				yield @middle_diagonal[i], i, i
+				yield @upper_diagonal[i], i, i + 1 if i + 1 < row_count
 			end
+			self
+		else
+			to_m.each_with_index(which, &Proc.new)
 		end
-		self
 	end
 
 	def coerce(other)
-		[other, to_m]
+		[other, to_a]
 	end
 
 	def rows
