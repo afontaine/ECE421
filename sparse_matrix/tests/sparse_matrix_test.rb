@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../sparse_matrix.rb'
+require_relative '../sparse_matrix'
 
 # Majority of tests taken from Ruby 2.0 test library at 
 # https://github.com/ruby/ruby/blob/ruby_2_0_0/test/matrix/test_matrix.rb
@@ -171,7 +171,7 @@ class TestSparseMatrix < Test::Unit::TestCase
   end
 
   def test_new_matrix
-    assert_raise(TypeError) { SparseMatrix[Object.new] }
+    assert_raise(ContractError) { SparseMatrix[Object.new] }
     o = Object.new
     def o.to_ary; [1,2,3]; end
     assert_equal(@m1, SparseMatrix[o, [4,5,6]])

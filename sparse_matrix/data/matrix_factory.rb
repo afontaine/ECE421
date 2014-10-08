@@ -1,10 +1,10 @@
 require 'contracts'
 require 'matrix'
-require_relative '../contracts/sparse_contracts'
+require_relative '../contracts/contract_extensions'
 
 module MatrixFactory
   include Contracts
-  include SparseContracts
+  include ContractExtensions
 
   Contract RespondTo[:rows], EnumerableOf[RespondTo[:each]] => Matrix
   def self.create(klass, rows)

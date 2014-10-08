@@ -1,10 +1,10 @@
 require 'contracts'
 require 'test/unit'
-require_relative '../contracts/sparse_contracts'
+require_relative '../contracts/contract_extensions'
 
 class SparseHash < Hash
 	include Contracts
-	include SparseContracts
+	include ContractExtensions
 
   attr_reader :size
 
@@ -110,9 +110,7 @@ class SparseHash < Hash
 	Contract nil => Array
 	def to_a
 		Array.new(size) { |i| self[i].is_a?(SparseHash) ? self[i].to_a : self[i] }
-  end
-
-  alias_method :to_ary, :to_a
+ 	end
 
 	def method_missing(name, *args, &block)
 		to_a.send(name, *args, &block)

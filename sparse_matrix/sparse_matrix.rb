@@ -8,5 +8,5 @@ require_relative 'data/sparse_matrix'
 require_relative 'data/tridiagonal_matrix'
 
 # Contracts
-require_relative 'contracts/sparse_contracts'
+require_relative 'contracts/contract_extensions'
 require_relative 'contracts/invariant'

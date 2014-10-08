@@ -1,6 +1,6 @@
 require 'contracts'
 
-module SparseContracts
+module ContractExtensions
 	include Contracts
 
 	class EnumerableOf < CallableClass
@@ -46,6 +46,5 @@ module SparseContracts
 			"Expected argument of size 1..2, of either a Range or Int"
 		end
 	end
+
 end
-
-

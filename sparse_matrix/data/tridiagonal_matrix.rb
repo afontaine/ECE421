@@ -1,5 +1,4 @@
 require 'matrix'
-require 'mathn'
 require 'forwardable'
 require 'e2mmap.rb'
 

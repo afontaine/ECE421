@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../sparse_matrix.rb'
+require_relative '../sparse_matrix'
 
 class SparseHashTests < Test::Unit::TestCase
 	def setup
