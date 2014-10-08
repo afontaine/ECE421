@@ -38,11 +38,11 @@ class MatrixFactoryTest < Test::Unit::TestCase
     assert_false(m.instance_of? Matrix)
 		assert_kind_of(Matrix, m)
 
-    assert_raise(Contract::ContractError) do
+    assert_raise(ContractError) do
       MatrixFactory.create(Array, [[1, 2, 3],[2,3,4]])
     end
 
-    assert_raise(Contract::ContractError) do
+    assert_raise(ContractError) do
       MatrixFactory.create(SparseMatrix, [1, 2, 3, 2,3,4])
     end
 	end
