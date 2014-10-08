@@ -153,6 +153,13 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def inverse
+		thet = theta
+		ph = phi
+		Matrix.build(row_count) do |i, j|
+			next thet[i] * ph[i + 1].quo(thet.last) if i == j
+			next ((-1)**(i + j)) * @upper_diagonal[i...j].reduce(:*) * thet[i] * ph[j + 1].quo(thet.last) if i < j
+			next ((-1)**(i + j)) * @lower_diagonal[j..i].reduce(:*) * thet[j] * ph[i + 1].quo(thet.last) if i > j
+		end
 	end
 
 	def square?
@@ -268,5 +275,12 @@ class TridiagonalMatrix < Matrix
 			.reduce([1, @middle_diagonal[0]]) do |thet, x|
 			thet << x[0] * thet[-1] - x[1] * x[2] * thet[-2]
 		end
+	end
+
+	def phi
+		@middle_diagonal[0..-2].reverse.zip(@upper_diagonal.reverse, @lower_diagonal.reverse)\
+			.reduce([1, @middle_diagonal.last]) do |ph, x|
+			ph << x[0] * ph.last - x[1] * x[2] * ph[-2]
+		end.reverse
 	end
 end
