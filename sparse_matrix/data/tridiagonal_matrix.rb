@@ -1,6 +1,8 @@
 require 'matrix'
 require 'forwardable'
 require 'e2mmap.rb'
+require_relative '../contracts/invariant'
+require 'test/unit/assertions'
 
 module ExceptionForTridiagionalMatrix
 	extend ExceptionForMatrix
@@ -11,11 +13,12 @@ end
 class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
+	include Enumerable
+	extend Test::Unit::Assertions
 	extend Forwardable
-	extend Enumerable
+	extend Invariant
 
 	delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :to_m
-
 
 	public
 
@@ -28,12 +31,12 @@ class TridiagonalMatrix < Matrix
 		lower = []
 		rows.each_with_index do |x, i|
 			fail ErrDimensionMismatch,
-			"row size differs (#{x.size} should be #{size})" unless x.size == size
+			     "row size differs (#{x.size} should be #{size})" unless x.size == size
 			fail ErrDimensionMismatch,
-			"matrix not square (#{x.size} should be #{rows.size})" unless x.size == rows.size
+			     "matrix not square (#{x.size} should be #{rows.size})" unless x.size == rows.size
 			x.each_with_index do |y, j|
 				case i
-				when j - 1
+					when j - 1
 						upper << y
 					when j
 						middle << y
@@ -47,7 +50,7 @@ class TridiagonalMatrix < Matrix
 		new upper, middle, lower
 	end
 
-	def self.build(row_count, col_count = row_count)
+	def self.build(row_count)
 		return :to_enum unless block_given?
 		upper = Array.new(row_count) { |x| yield x, x + 1 }
 		middle = Array.new(row_count) { |x| yield x, x }
@@ -91,11 +94,11 @@ class TridiagonalMatrix < Matrix
 
 	def eql?(other)
 		return false unless other.respond_to?(:upper_diagonal) &&
-		other.respond_to?(:middle_diagonal) &&
-		other.respond_to?(:lower_diagonal)
+			other.respond_to?(:middle_diagonal) &&
+			other.respond_to?(:lower_diagonal)
 		(upper_diagonal.eql?(other.upper_diagonal) &&
-		middle_diagonal.eql?(other.middle_diagonal) &&
-		lower_diagonal.eql?(other.lower_diagonal))
+			middle_diagonal.eql?(other.middle_diagonal) &&
+			lower_diagonal.eql?(other.lower_diagonal))
 	end
 
 	def hash
@@ -167,7 +170,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def diagonal?
-		@upper_diagonal.all? { |x| x == 0} && @lower_diagonal.all? { |x| x == 0 }
+		@upper_diagonal.all? { |x| x == 0 } && @lower_diagonal.all? { |x| x == 0 }
 	end
 
 	def toeplitz?
@@ -223,13 +226,13 @@ class TridiagonalMatrix < Matrix
 	def get_value(row, col)
 		case row
 		when col - 1
-				return @upper_diagonal[row]
-			when col
-				return @middle_diagonal[row]
-			when col + 1
-				return @lower_diagonal[col]
-			else
-				return 0
+			return @upper_diagonal[row]
+		when col
+			return @middle_diagonal[row]
+		when col + 1
+			return @lower_diagonal[col]
+		else
+			return 0
 		end
 	end
 
@@ -248,16 +251,6 @@ class TridiagonalMatrix < Matrix
 	def lower_diagonal
 		Vector.elements(@lower_diagonal)
 	end
-
-
-	alias_method :column_count, :row_count
-	alias_method :det, :determinant
-	alias_method :inspect, :to_s
-	alias_method :[], :get_value
-	alias_method :collect, :map
-	alias_method :lower_triangular?, :upper_triangular?
-	alias_method :tr, :trace
-	alias_method :t, :transpose
 
 	private
 
@@ -302,4 +295,19 @@ class TridiagonalMatrix < Matrix
 			ph << x[0] * ph.last - x[1] * x[2] * ph[-2]
 		end.reverse
 	end
+
+	invariant(instance_methods(false) | Matrix.instance_methods(false)) do
+		TridiagonalMatrix.assert_compare(1, '<', @middle_diagonal.size)
+		TridiagonalMatrix.assert_true(@lower_diagonal.size == @middle_diagonal.size - 1)
+		TridiagonalMatrix.assert_true(@upper_diagonal.size == @lower_diagonal.size)
+	end
+
+	alias_method :column_count, :row_count
+	alias_method :det, :determinant
+	alias_method :inspect, :to_s
+	alias_method :[], :get_value
+	alias_method :collect, :map
+	alias_method :lower_triangular?, :upper_triangular?
+	alias_method :tr, :trace
+	alias_method :t, :transpose
 end

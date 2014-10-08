@@ -23,7 +23,10 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 			[0, 0, 0, 0, 1, 2]
 		]
 
-		@test_m = Matrix.build(6) { |i, j| next 2 if i == j; 0 }
+		@test_m = Matrix.build(6) do |i, j|
+			next 2 if i == j
+			0
+		end
 
 		invariants
 	end
@@ -33,11 +36,11 @@ class TridiagonalMatrixTest < Test::Unit::TestCase
 	end
 
 	def invariants
-		assert_compare(0, "<", @m.row_count)
+		assert_compare(0, '<', @m.row_count)
 		assert_equal(@m.row_count, @m.column_count)
 		assert_true(@m.square?)
 		assert_true(@m.each_with_index.reduce(true) do |a, x|
-			a && ((x[0] == 0) || ((x[2] - 1..x[2] + 1) === x[1] ))
+			a && ((x[0] == 0) || ((x[2] - 1..x[2] + 1) === x[1]))
 		end)
 	end
 
