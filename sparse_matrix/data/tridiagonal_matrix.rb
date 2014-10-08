@@ -50,11 +50,11 @@ class TridiagonalMatrix < Matrix
 		new upper, middle, lower
 	end
 
-	def self.build(row_count)
+	def self.build(*row_count)
 		return :to_enum unless block_given?
-		upper = Array.new(row_count) { |x| yield x, x + 1 }
-		middle = Array.new(row_count) { |x| yield x, x }
-		lower = Array.new(row_count) { |x| yield x - 1, x }
+		upper = Array.new(row_count[0]) { |x| yield x, x + 1 }
+		middle = Array.new(row_count[0]) { |x| yield x, x }
+		lower = Array.new(row_count[0]) { |x| yield x - 1, x }
 		new upper, middle, lower
 	end
 
