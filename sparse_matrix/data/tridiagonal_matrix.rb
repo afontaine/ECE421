@@ -202,7 +202,11 @@ class TridiagonalMatrix < Matrix
 	def solve(vec)
 		c = c_prime
 		Vector.elements(x_prime(c, d_prime(vec, c)).reverse)
-	end
+  end
+
+  def trace
+    @middle_diagonal.reduce(:+)
+  end
 
 	def get_value(row, col)
 		case row
