@@ -1,5 +1,4 @@
 require 'matrix'
-require 'mathn'
 require 'forwardable'
 require 'e2mmap.rb'
 
@@ -18,57 +17,76 @@ class TridiagonalMatrix < Matrix
 
 	public
 
-	def initialize(upper, middle, lower)
-		@upper_diagonal = upper
-		@middle_diagonal = middle
-		@lower_diagonal = lower
-		self
-	end
+  def self.rows(rows, copy = true)
+    rows = convert_to_array(rows)
+    rows.map! { |row| convert_to_array(row, copy) }
+    size = (rows[0] || []).size
+    upper = []
+    middle = []
+    lower = []
+    rows.each_with_index do |x, i|
+      fail ErrDimensionMismatch,
+      "row size differs (#{x.size} should be #{size})" unless x.size == size
+      fail ErrDimensionMismatch,
+      "matrix not square (#{x.size} should be #{rows.size})" unless x.size == rows.size
+      x.each_with_index do |y, j|
+        case i
+        when j - 1
+          upper << y
+          when j
+            middle << y
+          when j + 1
+            lower << y
+          else
+            fail ErrNotTridiagonal, 'Matrix is not tridiagonal' unless y == 0
+        end
+      end
+    end
+    new upper, middle, lower
+  end
 
-	def self.rows(rows, copy = true)
-		rows = convert_to_array(rows)
-		rows.map! { |row| convert_to_array(row, copy) }
-		size = (rows[0] || []).size
-		square_size = rows.size
-		upper = []
-		middle = []
-		lower = []
-		rows.each_with_index do |x, i|
-			fail ErrDimensionMismatch,
-			     "row size differs (#{x.size} should be #{size})" unless x.size == size
-			fail ErrDimensionMismatch,
-			     "matrix not square (#{x.size} should be #{square_size})" unless x.size == square_size
-			x.each_with_index do |y, j|
-				case i
-				when j - 1
-					upper << y
-				when j
-					middle << y
-				when j + 1
-					lower << y
-				else
-					fail ErrNotTridiagonal, 'Matrix is not tridiagonal' unless y == 0
-				end
-			end
-		end
-		new upper, middle, lower
-	end
+  def self.build(row_count, col_count = row_count)
+    return :to_enum unless block_given?
+    upper = Array.new(row_count) { |x| yield x, x + 1 }
+    middle = Array.new(row_count) { |x| yield x, x }
+    lower = Array.new(row_count) { |x| yield x - 1, x }
+    new upper, middle, lower
+  end
 
-	def self.identity(size)
-		scalar(size, 1)
-	end
+  def self.identity(size)
+    scalar(size, 1)
+  end
 
-	def self.scalar(n, value)
-		upper = Array.new(n) { 0 }
-		middle = Array.new(n) { value }
-		lower = Array.new(n) { 0 }
-		new upper, middle, lower
-	end
+  def self.scalar(n, value)
+    upper = Array.new(n) { 0 }
+    middle = Array.new(n) { value }
+    lower = Array.new(n) { 0 }
+    new upper, middle, lower
+  end
 
-	def ==(other)
-		return false unless other.respond_to?(:zip)
-		zip(other).each.reduce(true) { |result, x| result && (x[1] == x[0]) }
-	end
+  def initialize(*args)
+    if args.length == 3
+      @upper_diagonal = args[0]
+      @middle_diagonal = args[1]
+      @lower_diagonal = args[2]
+    else
+
+    end
+    self
+  end
+
+  def ==(other)
+    return false unless other.respond_to?(:zip)
+    zip(other).each.reduce(true) { |result, x| result && (x[1] == x[0]) }
+  end
+
+  def /(other)
+    return self * other.inverse if other.respond_to?(:inverse)
+    new_upper = @upper_diagonal.map { |x| x / other }
+    new_middle = @middle_diagonal.map { |x| x / other }
+    new_lower = @lower_diagonal.map { |x| x / other }
+    TridiagonalMatrix.send(:new, new_upper, new_middle, new_lower)
+  end
 
 	def eql?(other)
 		return false unless other.respond_to?(:upper_diagonal) &&
