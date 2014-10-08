@@ -256,15 +256,14 @@ class TridiagonalMatrix < Matrix
 
 	def c_prime
 		@upper_diagonal[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal)\
-			.reduce([@upper_diagonal[0] / @middle_diagonal[0]]) do |c, x|
-			c << x[0] / (x[1] - x[2] * c.last)
+			.reduce([@upper_diagonal[0].quo(@middle_diagonal[0])]) do |c, x|
+			c << x[0].quo(x[1] - x[2] * c.last)
 		end
 	end
 
 	def d_prime(vec, c)
-		vec[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal, c).reduce([vec[0] / @middle_diagonal[0]]) do |d, x|
-			d << (x[0] - x[2] * d.last) /
-				(x[1] - x[2] * x[3])
+		vec[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal, c).reduce([vec[0].quo(@middle_diagonal[0])]) do |d, x|
+			d << (x[0] - x[2] * d.last).quo(x[1] - x[2] * x[3])
 		end
 	end
 
