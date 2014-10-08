@@ -37,16 +37,16 @@ class SparseMatrix < Matrix
 		@rows[i][j] if @rows[i]
 	end
 
-	alias_method :[], :get
-
 	Contract RespondTo[:to_i], RespondTo[:to_i], Any => Any
 	def set(i, j, v)
 		i = i.to_i
 		j = j.to_i
-		@rows[i][j] = v if @rows[i] && j < column_count
-	end
+		return nil if i >= row_count || j >= column_count
 
-	alias_method :[]=, :set
+		row = @rows[i]
+		row[j] = v
+		@rows[i] = row
+	end
 
 	Contract RespondTo[:to_i] => Maybe[Vector]
 	def row(i)
@@ -103,6 +103,35 @@ class SparseMatrix < Matrix
 		SparseMatrix.rows(to_m.minor(*args).to_a)
 	end
 
+	# algebra
+	
+	def +(other)
+		case other
+		when Matrix
+			merge(other) { |_, _, v, v2| v + v2 }
+		else
+			super(other)
+		end
+	end
+
+	def -(other)
+		case other
+		when Matrix
+			merge(other) { |_, _, v, v2| v - v2 }
+		else
+			super(other)
+		end
+	end
+
+	def *(other)
+		case other
+		when Numeric
+			self.class.build(row_count, column_count) { |i,j| self[i,j] * other }
+		else
+			super(other)
+		end
+	end
+
 	# class methods
 
 	Contract RespondTo[:to_i], Maybe[RespondTo[:to_i]], Maybe[Func[Any => Any]] => Or[Enumerable, SparseMatrix]
@@ -113,12 +142,24 @@ class SparseMatrix < Matrix
 	end
 
 	Contract EnumerableOf[Or[RespondTo[:each_with_index], RespondTo[:to_ary]]], Any => SparseMatrix
-	def self.rows(rows, copy = false)
+	def self.rows(rows, copy = true)
 		rows = convert_to_multi_enum(rows, copy)
 		new(rows, (rows[0] || []).size)
 	end
 
+	invariant(*(instance_methods(false) | Matrix.instance_methods(false))) do
+		assert(@row_count >= 0)
+		assert(@column_count >= 0)
+	end
+
+	alias_method :[]=, :set
+	alias_method :[], :get
+
 	private
+
+	def dimensions_match(other)
+		row_count == other.row_count && column_count == other.column_count
+	end
 
 	def create(row_count, column_count)
 		@rows = row_count.times.inject(SparseHash.new(row_count) { SparseHash.new(column_count, 0) }) do |h, i|
@@ -133,30 +174,20 @@ class SparseMatrix < Matrix
 		@row_count = row_count
 	end
 
-	invariant(:get, :set, :[], :[]=, :row, :column, :+, :/, :*, :transpose, :each) do
-		assert(@row_count >= 0)
-		assert(@column_count >= 0)
-		assert_equal(@rows[0].size, @column_count)
-		assert_equal(@rows.size, @row_count)
+	def merge(other)
+		raise ArgumentError, "Matrix must be of same dimensions" unless dimensions_match(other)
+		self.class.build(row_count, column_count) { |i,j| yield(i, j, self[i,j], other[i,j]) }
 	end
 
 	module ConversionHelper
-		private
-		def convert_to_multi_enum(obj, copy = false)
+		def convert_to_multi_enum(obj, copy = true)
 			obj.each_with_index.inject(copy ? obj.dup : obj) do |obj, (row, i)|
 				if row.respond_to? :each_with_index
-					obj[i] = copy ? dup_enum(row) : row
+					obj[i] = row.dup if copy
 				else
 					obj[i] = convert_to_array(row, copy)
 				end
 				obj
-			end
-		end
-
-		def dup_enum(e)
-			e.each_with_index.inject(e.dup) do |e2, (v, i)|
-				e2[i] = v.dup
-				e2
 			end
 		end
 	end

@@ -6,28 +6,28 @@ class SparseHash < Hash
 	include Contracts
 	include ContractExtensions
 
-  attr_reader :size
+ 	attr_reader :size
 
 	Contract RespondTo[:to_i], Any, Maybe[Func[Hash, Any => Any]] => SparseHash
 	def initialize(size, default = nil, &block)
 		@size = size.to_i
-    @default = block || Proc.new { default }
+    	@default = block || Proc.new { default }
 		super() { |h,k| k.between?(0, @size-1) ?  @default.call(h,k) : nil }
 		self
-  end
+ 	end
 
-  Contract Any => Any
-  def default=(value)
-    @default = value.respond_to?(:call) ? value : Proc.new { value }
-  end
+ 	Contract Any => Any
+ 	def default=(value)
+    	@default = value.respond_to?(:call) ? value : Proc.new { value }
+	end
 
-  alias_method :default_proc=, :default=
+ 	alias_method :default_proc=, :default=
 
 	Contract RespondTo[:to_i], Any => Any
 	def []=(k,v)
 		k = k.to_i
-    k += size if k < 0
-    return nil unless k.between?(0, size - 1)
+    	k += size if k < 0
+    	return nil unless k.between?(0, size - 1)
 		v == default_proc.call(self, k) ? delete(k) : super(k,v)
 	end
 
@@ -73,9 +73,9 @@ class SparseHash < Hash
 				yield v
 			end
 		end
-  end
+  	end
 
-  alias_method :collect, :map
+ 	alias_method :collect, :map
 
 	Contract Or[Bool, Func[Any => Any], nil] => Or[Enumerator, SparseHash]
 	def each_with_index(defaults = true)
@@ -117,10 +117,6 @@ class SparseHash < Hash
 	end
 
 	private
-
-  def duplicate_defaults
-    self.class.new(size, &default)
-  end
 
 	def size_arr
 		(0...size)
