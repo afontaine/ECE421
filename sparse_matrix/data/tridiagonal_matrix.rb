@@ -12,44 +12,46 @@ class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
 	extend Forwardable
+	extend Enumerable
 
-	delegate [:+, :*, :**, :/, :-] => :to_m
+	delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :to_m
+
 
 	public
-
-	def initialize(upper, middle, lower)
-		@upper_diagonal = upper
-		@middle_diagonal = middle
-		@lower_diagonal = lower
-		self
-	end
 
 	def self.rows(rows, copy = true)
 		rows = convert_to_array(rows)
 		rows.map! { |row| convert_to_array(row, copy) }
 		size = (rows[0] || []).size
-		square_size = rows.size
 		upper = []
 		middle = []
 		lower = []
 		rows.each_with_index do |x, i|
 			fail ErrDimensionMismatch,
-			     "row size differs (#{x.size} should be #{size})" unless x.size == size
+			"row size differs (#{x.size} should be #{size})" unless x.size == size
 			fail ErrDimensionMismatch,
-			     "matrix not square (#{x.size} should be #{square_size})" unless x.size == square_size
+			"matrix not square (#{x.size} should be #{rows.size})" unless x.size == rows.size
 			x.each_with_index do |y, j|
 				case i
 				when j - 1
-					upper << y
-				when j
-					middle << y
-				when j + 1
-					lower << y
-				else
-					fail ErrNotTridiagonal, 'Matrix is not tridiagonal' unless y == 0
+						upper << y
+					when j
+						middle << y
+					when j + 1
+						lower << y
+					else
+						fail ErrNotTridiagonal, 'Matrix is not tridiagonal' unless y == 0
 				end
 			end
 		end
+		new upper, middle, lower
+	end
+
+	def self.build(row_count, col_count = row_count)
+		return :to_enum unless block_given?
+		upper = Array.new(row_count) { |x| yield x, x + 1 }
+		middle = Array.new(row_count) { |x| yield x, x }
+		lower = Array.new(row_count) { |x| yield x - 1, x }
 		new upper, middle, lower
 	end
 
@@ -64,18 +66,36 @@ class TridiagonalMatrix < Matrix
 		new upper, middle, lower
 	end
 
+	def initialize(upper, middle, lower)
+		@upper_diagonal = upper
+		@middle_diagonal = middle
+		@lower_diagonal = lower
+		self
+	end
+
 	def ==(other)
 		return false unless other.respond_to?(:zip)
 		zip(other).each.reduce(true) { |result, x| result && (x[1] == x[0]) }
 	end
 
+
+	def /(other)
+		return self * other.inverse if other.respond_to?(:inverse)
+		map { |x| x / other }
+	end
+
+	def *(other)
+		return to_m * other if other.respond_to?(:each)
+		map { |x| x * other }
+	end
+
 	def eql?(other)
 		return false unless other.respond_to?(:upper_diagonal) &&
-			other.respond_to?(:middle_diagonal) &&
-			other.respond_to?(:lower_diagonal)
+		other.respond_to?(:middle_diagonal) &&
+		other.respond_to?(:lower_diagonal)
 		(upper_diagonal.eql?(other.upper_diagonal) &&
-			middle_diagonal.eql?(other.middle_diagonal) &&
-			lower_diagonal.eql?(other.lower_diagonal))
+		middle_diagonal.eql?(other.middle_diagonal) &&
+		lower_diagonal.eql?(other.lower_diagonal))
 	end
 
 	def hash
@@ -85,10 +105,7 @@ class TridiagonalMatrix < Matrix
 	def map
 		return to_enum :map unless block_given?
 		block = Proc.new
-		new_upper = @upper_diagonal.map(&block)
-		new_middle = @middle_diagonal.map(&block)
-		new_lower = @lower_diagonal.map(&block)
-		TridiagonalMatrix.send(:new, new_upper, new_middle, new_lower)
+		TridiagonalMatrix.send(:new, @upper_diagonal.map(&block), @middle_diagonal.map(&block), @lower_diagonal.map(&block))
 	end
 
 	def row(i)
@@ -106,23 +123,29 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def each(which = :all)
-		return to_enum :each unless block_given?
-		each_with_index { |x| yield x }
+		return to_enum :each, which unless block_given?
+		each_with_index(which) { |x| yield x }
 		self
 	end
 
 	def each_with_index(which = :all)
-		return to_enum :each_with_index unless block_given?
-		row_count.times do |i|
-			column_count.times do |j|
-				yield self[i, j], i, j
+		return to_enum :each_with_index, which unless block_given?
+		if which == :tridiagonal
+			row_count.times do |i|
+				yield @lower_diagonal[i - 1], i, i - 1 if i > 0
+				yield @middle_diagonal[i], i, i
+				yield @upper_diagonal[i], i, i + 1 if i + 1 < row_count
 			end
+			self
+		elsif which == :diagonal
+			@middle_diagonal.each_with_index(&Proc.new)
+		else
+			to_m.each_with_index(which, &Proc.new)
 		end
-		self
 	end
 
 	def coerce(other)
-		[other, to_m]
+		[other, to_a]
 	end
 
 	def rows
@@ -130,14 +153,33 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def inverse
+		thet = theta
+		ph = phi
+		Matrix.build(row_count) do |i, j|
+			next thet[i] * ph[i + 1].quo(thet.last) if i == j
+			next ((-1)**(i + j)) * @upper_diagonal[i...j].reduce(:*) * thet[i] * ph[j + 1].quo(thet.last) if i < j
+			next ((-1)**(i + j)) * @lower_diagonal[j..i].reduce(:*) * thet[j] * ph[i + 1].quo(thet.last) if i > j
+		end
 	end
 
 	def square?
 		true
 	end
 
+	def diagonal?
+		@upper_diagonal.all? { |x| x == 0} && @lower_diagonal.all? { |x| x == 0 }
+	end
+
 	def toeplitz?
 		@upper_diagonal.reduce(true) { |a, e| a && e == @upper_diagonal[0] }
+	end
+
+	def upper_triangular?
+		false
+	end
+
+	def orthogonal?
+		transpose == inverse
 	end
 
 	def symmetric?
@@ -174,16 +216,20 @@ class TridiagonalMatrix < Matrix
 		Vector.elements(x_prime(c, d_prime(vec, c)).reverse)
 	end
 
+	def trace
+		@middle_diagonal.reduce(:+)
+	end
+
 	def get_value(row, col)
 		case row
 		when col - 1
-			return @upper_diagonal[row]
-		when col
-			return @middle_diagonal[row]
-		when col + 1
-			return @lower_diagonal[col]
-		else
-			return 0
+				return @upper_diagonal[row]
+			when col
+				return @middle_diagonal[row]
+			when col + 1
+				return @lower_diagonal[col]
+			else
+				return 0
 		end
 	end
 
@@ -203,13 +249,17 @@ class TridiagonalMatrix < Matrix
 		Vector.elements(@lower_diagonal)
 	end
 
+
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant
 	alias_method :inspect, :to_s
 	alias_method :[], :get_value
 	alias_method :collect, :map
+	alias_method :lower_triangular?, :upper_triangular?
+	alias_method :tr, :trace
+	alias_method :t, :transpose
 
-		private
+	private
 
 	attr_writer :upper_diagonal, :middle_diagonal, :lower_diagonal
 
@@ -222,15 +272,14 @@ class TridiagonalMatrix < Matrix
 
 	def c_prime
 		@upper_diagonal[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal)\
-			.reduce([@upper_diagonal[0] / @middle_diagonal[0]]) do |c, x|
-			c << x[0] / (x[1] - x[2] * c.last)
+			.reduce([@upper_diagonal[0].quo(@middle_diagonal[0])]) do |c, x|
+			c << x[0].quo(x[1] - x[2] * c.last)
 		end
 	end
 
 	def d_prime(vec, c)
-		vec[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal, c).reduce([vec[0] / @middle_diagonal[0]]) do |d, x|
-			d << (x[0] - x[2] * d.last) /
-				(x[1] - x[2] * x[3])
+		vec[1..-1].zip(@middle_diagonal[1..-1], @lower_diagonal, c).reduce([vec[0].quo(@middle_diagonal[0])]) do |d, x|
+			d << (x[0] - x[2] * d.last).quo(x[1] - x[2] * x[3])
 		end
 	end
 
@@ -245,5 +294,12 @@ class TridiagonalMatrix < Matrix
 			.reduce([1, @middle_diagonal[0]]) do |thet, x|
 			thet << x[0] * thet[-1] - x[1] * x[2] * thet[-2]
 		end
+	end
+
+	def phi
+		@middle_diagonal[0..-2].reverse.zip(@upper_diagonal.reverse, @lower_diagonal.reverse)\
+			.reduce([1, @middle_diagonal.last]) do |ph, x|
+			ph << x[0] * ph.last - x[1] * x[2] * ph[-2]
+		end.reverse
 	end
 end
