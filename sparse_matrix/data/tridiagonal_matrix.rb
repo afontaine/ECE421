@@ -3,6 +3,7 @@ require 'forwardable'
 require 'e2mmap.rb'
 require_relative '../contracts/invariant'
 require 'test/unit/assertions'
+require 'pry'
 
 module ExceptionForTridiagionalMatrix
 	extend ExceptionForMatrix
@@ -14,9 +15,9 @@ class TridiagonalMatrix < Matrix
 
 	include ExceptionForTridiagionalMatrix
 	include Enumerable
+	extend Invariant
 	extend Test::Unit::Assertions
 	extend Forwardable
-	extend Invariant
 
 	delegate [:+, :**, :-, :hermitian?, :normal?, :permutation?] => :to_m
 
@@ -52,9 +53,9 @@ class TridiagonalMatrix < Matrix
 
 	def self.build(*row_count)
 		return :to_enum unless block_given?
-		upper = Array.new(row_count[0]) { |x| yield x, x + 1 }
+		upper = Array.new(row_count[0] - 1) { |x| yield x, x + 1 }
 		middle = Array.new(row_count[0]) { |x| yield x, x }
-		lower = Array.new(row_count[0]) { |x| yield x - 1, x }
+		lower = Array.new(row_count[0] - 1) { |x| yield x + 1, x }
 		new upper, middle, lower
 	end
 
@@ -156,6 +157,8 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def inverse
+		binding.pry
+		fail ErrNotRegular unless regular?
 		thet = theta
 		ph = phi
 		Matrix.build(row_count) do |i, j|
@@ -237,7 +240,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def determinant
-		continuant(@middle_diagonal.size - 1)
+		continuant
 	end
 
 	def upper_diagonal
@@ -256,11 +259,10 @@ class TridiagonalMatrix < Matrix
 
 	attr_writer :upper_diagonal, :middle_diagonal, :lower_diagonal
 
-	def continuant(n)
-		return 1 if n == -1
-		return @middle_diagonal[0] if n == 0
-		@middle_diagonal[n] * continuant(n - 1) - @upper_diagonal[n - 1] *
-			@lower_diagonal[n - 1] * continuant(n - 2)
+	def continuant
+		@middle_diagonal[1..-1].zip(@upper_diagonal, @lower_diagonal).reduce([1, @middle_diagonal[0]]) do |c, x|
+			c << x[0] * c.last - x[1] * x[2] * c[-2]
+		end.last
 	end
 
 	def c_prime
@@ -296,7 +298,7 @@ class TridiagonalMatrix < Matrix
 		end.reverse
 	end
 
-	invariant(instance_methods(false) | Matrix.instance_methods(false)) do
+	invariant(TridiagonalMatrix.public_instance_methods(false) | Matrix.public_instance_methods(false)) do
 		TridiagonalMatrix.assert_compare(1, '<', @middle_diagonal.size)
 		TridiagonalMatrix.assert_true(@lower_diagonal.size == @middle_diagonal.size - 1)
 		TridiagonalMatrix.assert_true(@upper_diagonal.size == @lower_diagonal.size)
