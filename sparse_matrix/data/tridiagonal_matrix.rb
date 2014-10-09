@@ -88,7 +88,14 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def *(other)
-		return to_m * other if other.respond_to?(:each)
+		return Matrix.send(:new, Array.new(row_count) do |i|
+			Array.new(other.column_count) do |j|
+				e0 = (i == 0 ? 0 : self[i, i - 1] * other[i - 1, j])
+				e1 = self[i, i] * other[i, j]
+				e2 = (i == row_count - 1 || i == other.column_count - 1 ? 0 : self[i, i + 1] * other[i + 1, j])
+				e0 + e1 + e2
+			end
+		end) if other.respond_to?(:each)
 		map { |x| x * other }
 	end
 
@@ -159,11 +166,13 @@ class TridiagonalMatrix < Matrix
 		fail ErrNotRegular unless regular?
 		thet = theta
 		ph = phi
-		Matrix.build(row_count) do |i, j|
-			next thet[i] * ph[i + 1].quo(thet.last) if i == j
-			next ((-1)**(i + j)) * @upper_diagonal[i...j].reduce(:*) * thet[i] * ph[j + 1].quo(thet.last) if i < j
-			next ((-1)**(i + j)) * @lower_diagonal[j..i].reduce(:*) * thet[j] * ph[i + 1].quo(thet.last) if i > j
-		end
+		Matrix.send(:new, Array.new(row_count) do |i|
+			Array.new(column_count) do |j|
+				next thet[i] * ph[i + 1].quo(thet.last) if i == j
+				next ((-1)**(i + j)) * @upper_diagonal[i...j].reduce(:*) * thet[i] * ph[j + 1].quo(thet.last) if i < j
+				next ((-1)**(i + j)) * @lower_diagonal[j..i].reduce(:*) * thet[j] * ph[i + 1].quo(thet.last) if i > j
+			end
+		end)
 	end
 
 	def square?
@@ -203,7 +212,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def to_m
-		Matrix.rows(to_a, false)
+		Matrix.send(:new, to_a)
 	end
 
 	def transpose!
@@ -212,7 +221,7 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def transpose
-		TridiagonalMatrix.send(:new, @lower_diagonal, @middle_diagonal, @upper_diagonal)
+		self.class.send(:new, @lower_diagonal, @middle_diagonal, @upper_diagonal)
 	end
 
 	def solve(vec)
