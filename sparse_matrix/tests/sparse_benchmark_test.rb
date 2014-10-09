@@ -58,11 +58,6 @@ class SparseBenchmarkTest < Test::Unit::TestCase
 			x.report('Matrix') { m + m }
 			puts ''
 
-			puts 'matrix multiplication'
-			x.report('Sparse') { sm * sm }
-			x.report('Matrix') { m * m }
-			puts ''
-
 		end
 	end
 end

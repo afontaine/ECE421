@@ -3,7 +3,6 @@ require 'forwardable'
 require 'e2mmap.rb'
 require_relative '../contracts/invariant'
 require 'test/unit/assertions'
-require 'pry'
 
 module ExceptionForTridiagionalMatrix
 	extend ExceptionForMatrix
@@ -157,7 +156,6 @@ class TridiagonalMatrix < Matrix
 	end
 
 	def inverse
-		binding.pry
 		fail ErrNotRegular unless regular?
 		thet = theta
 		ph = phi
