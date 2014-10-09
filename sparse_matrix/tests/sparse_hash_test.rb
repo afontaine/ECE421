@@ -38,12 +38,11 @@ class SparseHashTests < Test::Unit::TestCase
 		h = SparseHash.new(size, default)
 		assert_equal(h.size, size)
 
-		assert_equal(h[-1], default)
+		assert_nil(h[-1])
 		assert_equal(h[0], default)
 		assert_equal(h[size/2], default)		
 		assert_equal(h[size-1], default)
 		assert_nil(h[size])
-		assert_nil(h[size*-1 - 1])
 
 		h[size/2] = 10
 		assert_equal(h[size/2], 10)
@@ -55,13 +54,6 @@ class SparseHashTests < Test::Unit::TestCase
 
 		h[size-1] = 10
 		assert_equal(h[size-1], 10)
-
-		h[size] = 10
-		assert_nil(h[size])
-
-		h['1'] = 10
-		assert_equal(h['1'], 10)
-		assert_equal(h[1], 10)
 	end
 
 	def test_defaults

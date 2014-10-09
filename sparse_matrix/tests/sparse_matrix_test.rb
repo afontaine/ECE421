@@ -4,6 +4,7 @@ require_relative '../sparse_matrix'
 # Majority of tests taken from Ruby 2.0 test library at 
 # https://github.com/ruby/ruby/blob/ruby_2_0_0/test/matrix/test_matrix.rb
 class TestSparseMatrix < Test::Unit::TestCase
+
   def setup
     @m1 = SparseMatrix[[1,2,3], [4,5,6]]
     @m2 = SparseMatrix[[1,2,3], [4,5,6]]
@@ -13,6 +14,19 @@ class TestSparseMatrix < Test::Unit::TestCase
 
     @m5 = SparseMatrix[[1,0,0], [0,0,0]]
     @m6 = SparseMatrix[[1,0,0], [0,0,0], [0,0,2]]
+
+	invariant
+  end
+
+  def teardown
+	invariant
+  end
+
+  def invariant
+	  [@m1, @m2, @m3, @m4, @m5, @m5, @m6, @n1].each do |m|
+		  assert(m.row_count >= 0)
+		  assert(m.column_count >= 0)
+	  end
   end
 
   # begin Ruby 2.0.0 matrix test library
@@ -171,7 +185,7 @@ class TestSparseMatrix < Test::Unit::TestCase
   end
 
   def test_new_matrix
-    assert_raise(ContractError) { SparseMatrix[Object.new] }
+    assert_raise(TypeError) { SparseMatrix[Object.new] }
     o = Object.new
     def o.to_ary; [1,2,3]; end
     assert_equal(@m1, SparseMatrix[o, [4,5,6]])

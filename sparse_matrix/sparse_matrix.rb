@@ -10,3 +10,4 @@ require_relative 'data/tridiagonal_matrix'
 # Contracts
 require_relative 'contracts/contract_extensions'
 require_relative 'contracts/invariant'
+require_relative 'contracts/matrix_contract'
