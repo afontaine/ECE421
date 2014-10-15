@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+gem 'test-unit', '~> 3.0.1'
+gem 'contracts', '~> 0.4'
+
+group :development do
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'pry-rescue'
+  gem 'pry-stack_explorer'
+  gem 'pry-doc'
+  gem 'simplecov'
+end
