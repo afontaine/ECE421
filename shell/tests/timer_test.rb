@@ -28,7 +28,7 @@ class TimerTest < Test::Unit::TestCase
   def test_new_process
     ruby = `ps | grep ruby | wc-l`.to_i
     Timer::start(100000000, "started")
-    assert_equal(ruby + 1, `ps | grep ruby | wc-l`)
+    assert_equal(ruby + 1, `ps | grep ruby | wc-l`.to_i)
   end
 
 end
