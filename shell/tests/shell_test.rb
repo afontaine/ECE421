@@ -8,10 +8,16 @@ class ShellTest < Test::Unit::TestCase
     @sh = PilotShell.new
     @dir = Dir.mktmpdir
     Dir.chdir(@dir)
+    invariant
   end
 
   def cleanup
+    invariant
     FileUtils.rm_rf @dir
+  end
+
+  def invariant
+    assert !@sh.dir.empty?
   end
 
   def test_echo
@@ -46,16 +52,23 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def test_invalid
-    command = 'invalid_command_that_will_never_run if it does then I hate you and your computer'
-
     assert_raise(PilotShell::Error::CommandNotFound) do
-      @sh.eval(command)
+      @sh.eval('invalid_command_that_will_never_run if it does then I hate you and your computer')
     end
 
-    command = '{ |cmd| !nv4Lid 5ynt4>< }'
     assert_raise(PilotShell::Error::CommandNotFound) do
-      @sh.eval(command)
+      @sh.eval('{ |cmd| !nv4Lid 5ynt4>< }')
     end
+
+    assert_raise(PilotShell::Error::CommandNotFound) do
+      @sh.eval(Object.new)
+    end
+  end
+
+  def test_object
+    o = Object.new
+    def o.to_s; 'ls'; end
+    compare_commands o
   end
 
   def capture_stdout
