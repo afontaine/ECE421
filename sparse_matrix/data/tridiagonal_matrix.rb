@@ -305,11 +305,11 @@ class TridiagonalMatrix < Matrix
 		end.reverse
 	end
 
-	invariant(TridiagonalMatrix.public_instance_methods(false) | Matrix.public_instance_methods(false)) do
-		TridiagonalMatrix.assert_compare(1, '<', @middle_diagonal.size)
-		TridiagonalMatrix.assert_true(@lower_diagonal.size == @middle_diagonal.size - 1)
-		TridiagonalMatrix.assert_true(@upper_diagonal.size == @lower_diagonal.size)
-	end
+	# invariant(TridiagonalMatrix.public_instance_methods(false) | Matrix.public_instance_methods(false)) do
+	# 	TridiagonalMatrix.assert_compare(1, '<', @middle_diagonal.size)
+	# 	TridiagonalMatrix.assert_true(@lower_diagonal.size == @middle_diagonal.size - 1)
+	# 	TridiagonalMatrix.assert_true(@upper_diagonal.size == @lower_diagonal.size)
+	# end
 
 	alias_method :column_count, :row_count
 	alias_method :det, :determinant

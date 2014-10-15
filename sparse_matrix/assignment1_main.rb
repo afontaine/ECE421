@@ -1,3 +1,7 @@
+# Group 6i
+# Andrew Fontaine
+# Jacob Viau
+
 require_relative 'sparse_matrix'
 
 # Create is the same. TridiagonalMatrix will throw an exception if the matrix is not tridiagonal
