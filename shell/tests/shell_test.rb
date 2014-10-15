@@ -5,9 +5,9 @@ require_relative '../data/pilot_shell'
 class ShellTest < Test::Unit::TestCase
 
   def setup
-    @sh = PilotShell.new
     @dir = Dir.mktmpdir
     Dir.chdir(@dir)
+    @sh = PilotShell.new
     invariant
   end
 
