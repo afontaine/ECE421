@@ -92,4 +92,27 @@ class FileWatchTest < Test::Unit::TestCase
     assert block_ran
   end
 
+  def test_update
+    block_ran = false
+    `touch test test1 test2`
+    watch = FileWatch(:update, `ls`.split(/\s+/), 100) do |file|
+      assert_true(file.include?('test'))
+    end
+
+    assert_equal(:update, watch.mode)
+    assert_equal(100, watch.delay)
+    assert_equal(3, watch.files.size)
+    assert_true(watch.files.all? { |file| file.include?('test') })
+
+    assert_false(block_ran)
+    `cat 'test' > test`
+    sleep(105)
+    assert_true(block_ran)
+
+    block_ran = false
+    assert_false(block_ran)
+    `cat 'test2' > test2`
+    sleep(105)
+    assert_true(block_ran)
+  end
 end
