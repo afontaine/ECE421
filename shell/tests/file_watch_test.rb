@@ -51,7 +51,7 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal file_names, files
   end
 
-  def test_create_invalid
+  def test_invalid
     assert_raise(ArgumentError) do
       FileWatch.new(Object.new, Object.new)
     end
@@ -63,9 +63,17 @@ class FileWatchTest < Test::Unit::TestCase
     assert_raise(ArgumentError) do
       FileWatch.new(:create, 100)
     end
+
+    assert_raise(ArgumentError) do
+      FileWatch.new(:update, 100)
+    end
+
+    assert_raise(ArgumentError) do
+      FileWatch.new(:delete, 100)
+    end
   end
 
-  def test_create_coercion
+  def test_coercion
     block_ran = false
 
     o = Object.new
@@ -96,7 +104,7 @@ class FileWatchTest < Test::Unit::TestCase
   def test_update
     block_ran = false
     `touch test test1 test2`
-    watch = FileWatch(:update, `ls`.split(/\s+/), 100) do |file|
+    watch = FileWatch.new(:update, `ls`.split(/\s+/), 100) do |file|
       assert_true(file.include?('test'))
       block_ran = true
     end
@@ -114,6 +122,31 @@ class FileWatchTest < Test::Unit::TestCase
     block_ran = false
     assert_false(block_ran)
     `cat 'test2' > test2`
+    sleep(105)
+    assert_true(block_ran)
+  end
+
+  def test_delete
+    block_ran = false
+    `touch test test1 test2`
+    watch = FileWatch.new(:delete, `ls`.split(/\s+/), 100) do |file|
+      assert_true(file.include?('test'))
+      block_ran = true
+    end
+
+    assert_equal(:delete, watch.mode)
+    assert_equal(100, watch.delay)
+    assert_equal(3, watch.files.size)
+    assert_true(watch.files.all? { |file| file.include?('test') })
+
+    assert_false(block_ran)
+    `rm test`
+    sleep(105)
+    assert_true(block_ran)
+
+    block_ran = false
+    assert_false(block_ran)
+    `rm test2`
     sleep(105)
     assert_true(block_ran)
   end
