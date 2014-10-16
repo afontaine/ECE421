@@ -5,6 +5,7 @@ class FileWatchTest < Test::Unit::TestCase
 
   def setup
     @dir = Dir.mktmpdir
+    assert_true(Dir["#{@dir}/*"].empty?)
     Dir.chdir(@dir)
   end
 
@@ -36,6 +37,7 @@ class FileWatchTest < Test::Unit::TestCase
     `touch test test1 test2`
     watch = FileWatch(:update, `ls`.split(/\s+/), 100) do |file|
       assert_true(file.include?('test'))
+      block_ran = true
     end
 
     assert_equal(:update, watch.mode)
