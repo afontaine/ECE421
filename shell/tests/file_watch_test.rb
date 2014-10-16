@@ -95,8 +95,7 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal watch.files.size, 1
     assert_equal watch.files[0], 'tmpfile'
 
-    file = File.create('tmpfile', 'w')
-    file.close
+    File.open('tmpfile', 'w').close
     sleep(100)
     assert block_ran
   end
