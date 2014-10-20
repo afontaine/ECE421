@@ -1,4 +1,4 @@
 require 'mkmf'
 
-dir_config('timer', 'timer/include')
+dir_config('timer')
 create_makefile('timer')
