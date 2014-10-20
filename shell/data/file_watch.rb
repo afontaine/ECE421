@@ -20,14 +20,7 @@ class FileWatch
 
   def run
     watchers.each do |w|
-      fork do
-        begin
-          w.run
-        rescue SystemCallError
-          "Watcher #{w} failed to start."
-          return -1
-        end
-      end
+      fork { w.run }
     end
   end
 
@@ -40,6 +33,7 @@ class FileWatch
     assert mode.respond_to? :to_sym
     assert self.class.valid_modes.include? mode.to_sym
     assert delay.respond_to? :to_int
+    assert files.respond_to? :all?
     assert files.all? { |f| f.respond_to? :to_s }
   end
 

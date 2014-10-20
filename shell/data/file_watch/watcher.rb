@@ -61,12 +61,7 @@ class FileWatch
 
     def exec_changes
       sleep(delay)
-      begin
-        block.call(file)
-      rescue SystemCallError
-        puts "Error running block for #{file_name}"
-        -1
-      end
+      block.call(file)
     end
   end
 end
