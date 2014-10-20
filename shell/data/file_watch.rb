@@ -2,25 +2,34 @@ require 'test/unit'
 require_relative 'file_watch/watcher'
 
 class FileWatch
+  include Test::Unit::Assertions
 
   def initialize(mode, delay, *files, &block)
     assert block_given?
     pre_initialize(mode, delay, files)
 
-    @watchers = files.map do |f|
-      Watcher.new(mode, delay, f, &block)
-    end
+    @mode = mode.to_sym
+    @delay = delay.to_int
+    @files = files.map { |f| f.to_s }
 
-    @mode = mode
-    @delay = delay
-    @files = files
+    @watchers = @files.map do |f|
+      Watcher.new(@mode, @delay, f, &block)
+    end
   end
 
   attr_reader :mode, :delay, :files
 
-  def run
+  def run(out = $stdout)
     watchers.each do |w|
-      fork { w.run }
+      fork do
+        $stdout = out
+        begin
+          w.run
+        rescue SystemCallError
+          puts "Error running file watch on #{w.file}"
+          return -1
+        end
+      end
     end
   end
 
@@ -31,7 +40,7 @@ class FileWatch
   private
   def pre_initialize(mode, delay, files)
     assert mode.respond_to? :to_sym
-    assert self.class.valid_modes.include? mode.to_sym
+    assert Watcher.valid_modes.include? mode.to_sym
     assert delay.respond_to? :to_int
     assert files.respond_to? :all?
     assert files.all? { |f| f.respond_to? :to_s }

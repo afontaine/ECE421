@@ -6,12 +6,14 @@ class FileWatchTest < Test::Unit::TestCase
 
   def setup
     @dir = Dir.mktmpdir
+    @old_dir = Dir.pwd
     assert_true(Dir["#{@dir}/*"].empty?)
     Dir.chdir(@dir)
   end
 
   def cleanup
-    FileUtils.rm_rf @dir
+    Dir.chdir(@old_dir)
+    FileUtils.rm_r @dir
   end
 
   def test_create_single
@@ -27,7 +29,7 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal watch.files, %w(tmpfile)
 
     File.open('tmpfile', 'w').close
-    sleep(200)
+    sleep(1)
     assert block_ran
   end
 
@@ -46,29 +48,29 @@ class FileWatchTest < Test::Unit::TestCase
 
     files.each { |file| File.open('tmpfile', 'w').close }
 
-    sleep(200)
+    sleep(1)
     assert_equal block_run_count, 3
     assert_equal file_names, files
   end
 
   def test_invalid
-    assert_raise(ArgumentError) do
+    assert_raise(Test::Unit::AssertionFailedError) do
       FileWatch.new(Object.new, Object.new)
     end
 
-    assert_raise(ArgumentError) do
+    assert_raise(Test::Unit::AssertionFailedError) do
       FileWatch.new(Object.new, Object.new, Object.new)
     end
 
-    assert_raise(ArgumentError) do
+    assert_raise(Test::Unit::AssertionFailedError) do
       FileWatch.new(:create, 100)
     end
 
-    assert_raise(ArgumentError) do
+    assert_raise(Test::Unit::AssertionFailedError) do
       FileWatch.new(:update, 100)
     end
 
-    assert_raise(ArgumentError) do
+    assert_raise(Test::Unit::AssertionFailedError) do
       FileWatch.new(:delete, 100)
     end
   end
@@ -77,10 +79,10 @@ class FileWatchTest < Test::Unit::TestCase
     block_ran = false
 
     o = Object.new
-    def o.to_s; 'create'; end
+    def o.to_sym; :create; end
 
     o2 = Object.new
-    def o2.to_i; 100; end
+    def o2.to_int; 100; end
 
     o3 = Object.new
     def o3.to_s; 'tmpfile'; end
@@ -96,7 +98,7 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal watch.files[0], 'tmpfile'
 
     File.open('tmpfile', 'w').close
-    sleep(100)
+    sleep(0.1)
     assert block_ran
   end
 
@@ -115,13 +117,13 @@ class FileWatchTest < Test::Unit::TestCase
 
     assert_false(block_ran)
     `echo 'test' > test`
-    sleep(105)
+    sleep(0.105)
     assert_true(block_ran)
 
     block_ran = false
     assert_false(block_ran)
     `echo 'test2' > test2`
-    sleep(105)
+    sleep(0.105)
     assert_true(block_ran)
   end
 
@@ -140,13 +142,13 @@ class FileWatchTest < Test::Unit::TestCase
 
     assert_false(block_ran)
     `rm test`
-    sleep(105)
+    sleep(0.105)
     assert_true(block_ran)
 
     block_ran = false
     assert_false(block_ran)
     `rm test2`
-    sleep(105)
+    sleep(0.105)
     assert_true(block_ran)
   end
 end

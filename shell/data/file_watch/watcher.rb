@@ -60,7 +60,7 @@ class FileWatch
     end
 
     def exec_changes
-      sleep(delay)
+      sleep(delay / 1000.0)
       block.call(file)
     end
   end
