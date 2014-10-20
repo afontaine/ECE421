@@ -29,8 +29,9 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal watch.delay, 100
     assert_equal watch.files, %w(tmpfile)
 
+    sleep(0.5)
     File.open('tmpfile', 'w').close
-    sleep(1)
+    sleep(0.5)
     assert block_ran
   end
 
@@ -48,14 +49,15 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal watch.delay, 100
     assert_equal watch.files, files
 
+    sleep(0.5)
     files.each { |file| File.open(file, 'w').close }
+    sleep(0.5)
 
-    sleep(1)
     assert_equal block_run_count, 3
     assert_equal file_names, files
   end
 
-  def test_invalid
+  def test_invalid_input
     assert_raise(Test::Unit::AssertionFailedError) do
       FileWatch.new(Object.new, Object.new)
     end
@@ -100,15 +102,19 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal watch.files.size, 1
     assert_equal watch.files[0], 'tmpfile'
 
+    sleep(0.5)
     File.open('tmpfile', 'w').close
-    sleep(0.1)
+    sleep(0.5)
+
     assert block_ran
   end
 
   def test_update
     block_ran = false
-    `touch test test1 test2`
-    watch = FileWatch.new(:update, 100, `ls`.split(/\s+/)) do |file|
+    files = %w(test test1 test2)
+    files.each { |f| File.open(f, 'w').close }
+
+    watch = FileWatch.new(:update, 100, *files) do |file|
       assert file.include?('test')
       block_ran = true
     end
@@ -120,21 +126,27 @@ class FileWatchTest < Test::Unit::TestCase
     assert watch.files.all? { |file| file.include?('test') }
 
     assert_false(block_ran)
+
+    sleep(0.5)
     `echo 'test' > test`
-    sleep(0.105)
+    sleep(0.5)
     assert block_ran
 
     block_ran = false
     assert_false(block_ran)
+
+    sleep(0.5)
     `echo 'test2' > test2`
-    sleep(0.105)
+    sleep(0.5)
+
     assert block_ran
   end
 
   def test_delete
     block_ran = false
-    `touch test test1 test2`
-    watch = FileWatch.new(:delete, 100, `ls`.split(/\s+/)) do |file|
+    files = %w(test test1 test2)
+    files.each { |f| File.open(f, 'w').close }
+    watch = FileWatch.new(:delete, 100, *files) do |file|
       assert file.include?('test')
       block_ran = true
     end
@@ -146,14 +158,16 @@ class FileWatchTest < Test::Unit::TestCase
     assert watch.files.all? { |file| file.include?('test') }
 
     assert_false(block_ran)
+    sleep(0.5)
     `rm test`
-    sleep(0.105)
+    sleep(0.5)
     assert block_ran
 
     block_ran = false
     assert_false(block_ran)
+    sleep(0.5)
     `rm test2`
-    sleep(0.105)
+    sleep(0.5)
     assert block_ran
   end
 end

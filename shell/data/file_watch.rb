@@ -11,17 +11,18 @@ class FileWatch
     @mode = mode.to_sym
     @delay = delay.to_int
     @files = files.map { |f| f.to_s }
+    @threads = []
 
     @watchers = @files.map do |f|
       Watcher.new(@mode, @delay, f, &block)
     end
   end
 
-  attr_reader :mode, :delay, :files
+  attr_reader :mode, :delay, :files, :threads
 
   def run(out = $stdout)
     watchers.each do |w|
-      fork do
+      threads << Thread.new do
         $stdout = out
         begin
           w.run
