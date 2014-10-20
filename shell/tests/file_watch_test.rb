@@ -23,6 +23,7 @@ class FileWatchTest < Test::Unit::TestCase
       assert_equal file_name, 'tmpfile'
       block_ran = true
     end
+    watch.run
 
     assert_equal watch.mode, :create
     assert_equal watch.delay, 100
@@ -41,12 +42,13 @@ class FileWatchTest < Test::Unit::TestCase
       file_names << file_name
       block_run_count += 1
     end
+    watch.run
 
     assert_equal watch.mode, :create
     assert_equal watch.delay, 100
     assert_equal watch.files, files
 
-    files.each { |file| File.open('tmpfile', 'w').close }
+    files.each { |file| File.open(file, 'w').close }
 
     sleep(1)
     assert_equal block_run_count, 3
@@ -91,6 +93,7 @@ class FileWatchTest < Test::Unit::TestCase
       assert_equal file_name, 'tmpfile'
       block_ran = true
     end
+    watch.run
 
     assert_equal watch.mode, :create
     assert_equal watch.delay, 100
@@ -105,10 +108,11 @@ class FileWatchTest < Test::Unit::TestCase
   def test_update
     block_ran = false
     `touch test test1 test2`
-    watch = FileWatch.new(:update, `ls`.split(/\s+/), 100) do |file|
+    watch = FileWatch.new(:update, 100, `ls`.split(/\s+/)) do |file|
       assert_true(file.include?('test'))
       block_ran = true
     end
+    watch.run
 
     assert_equal(:update, watch.mode)
     assert_equal(100, watch.delay)
@@ -130,10 +134,11 @@ class FileWatchTest < Test::Unit::TestCase
   def test_delete
     block_ran = false
     `touch test test1 test2`
-    watch = FileWatch.new(:delete, `ls`.split(/\s+/), 100) do |file|
+    watch = FileWatch.new(:delete, 100, `ls`.split(/\s+/)) do |file|
       assert_true(file.include?('test'))
       block_ran = true
     end
+    watch.run
 
     assert_equal(:delete, watch.mode)
     assert_equal(100, watch.delay)
