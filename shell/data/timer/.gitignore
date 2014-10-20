@@ -1,0 +1,5 @@
+*.o
+*.def
+Makefile
+*.so
+timer_wrap.c

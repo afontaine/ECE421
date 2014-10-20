@@ -114,13 +114,13 @@ class FileWatchTest < Test::Unit::TestCase
     assert_true(watch.files.all? { |file| file.include?('test') })
 
     assert_false(block_ran)
-    `cat 'test' > test`
+    `echo 'test' > test`
     sleep(105)
     assert_true(block_ran)
 
     block_ran = false
     assert_false(block_ran)
-    `cat 'test2' > test2`
+    `echo 'test2' > test2`
     sleep(105)
     assert_true(block_ran)
   end
