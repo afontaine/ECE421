@@ -7,7 +7,7 @@ class FileWatchTest < Test::Unit::TestCase
   def setup
     @dir = Dir.mktmpdir
     @old_dir = Dir.pwd
-    assert_true(Dir["#{@dir}/*"].empty?)
+    assert Dir["#{@dir}/*"].empty?
     Dir.chdir(@dir)
   end
 
@@ -109,7 +109,7 @@ class FileWatchTest < Test::Unit::TestCase
     block_ran = false
     `touch test test1 test2`
     watch = FileWatch.new(:update, 100, `ls`.split(/\s+/)) do |file|
-      assert_true(file.include?('test'))
+      assert file.include?('test')
       block_ran = true
     end
     watch.run
@@ -117,25 +117,25 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal(:update, watch.mode)
     assert_equal(100, watch.delay)
     assert_equal(3, watch.files.size)
-    assert_true(watch.files.all? { |file| file.include?('test') })
+    assert watch.files.all? { |file| file.include?('test') }
 
     assert_false(block_ran)
     `echo 'test' > test`
     sleep(0.105)
-    assert_true(block_ran)
+    assert block_ran
 
     block_ran = false
     assert_false(block_ran)
     `echo 'test2' > test2`
     sleep(0.105)
-    assert_true(block_ran)
+    assert block_ran
   end
 
   def test_delete
     block_ran = false
     `touch test test1 test2`
     watch = FileWatch.new(:delete, 100, `ls`.split(/\s+/)) do |file|
-      assert_true(file.include?('test'))
+      assert file.include?('test')
       block_ran = true
     end
     watch.run
@@ -143,17 +143,17 @@ class FileWatchTest < Test::Unit::TestCase
     assert_equal(:delete, watch.mode)
     assert_equal(100, watch.delay)
     assert_equal(3, watch.files.size)
-    assert_true(watch.files.all? { |file| file.include?('test') })
+    assert watch.files.all? { |file| file.include?('test') }
 
     assert_false(block_ran)
     `rm test`
     sleep(0.105)
-    assert_true(block_ran)
+    assert block_ran
 
     block_ran = false
     assert_false(block_ran)
     `rm test2`
     sleep(0.105)
-    assert_true(block_ran)
+    assert block_ran
   end
 end
