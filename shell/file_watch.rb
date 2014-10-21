@@ -62,7 +62,7 @@ end
 abort('Missing arguments, see --help for usage') if files.nil? || command.nil? || mode.nil?
 
 begin
-  watch = FileWatch.new(mode, delay, *files) { |f| `#{command.gsub('%FILE_NAME%', f)}` }
+  watch = FileWatch.new(mode, delay, *files) { |f| puts `#{command.gsub('%FILE_NAME%', f)}` }
   watch.run
 rescue Interrupt
   abort('FileWatch terminated by user')
