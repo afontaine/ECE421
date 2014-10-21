@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../data/timer/timer'
+require_relative '../data/timer'
 
 class TimerTest < Test::Unit::TestCase
   def setup
