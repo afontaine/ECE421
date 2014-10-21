@@ -65,7 +65,7 @@ begin
   watch = FileWatch.new(mode, delay, *files) { |f| `#{command.gsub('%FILE_NAME%', f)}` }
   watch.run
 rescue Interrupt
-  puts 'FileWatch terminated by user'
+  abort('FileWatch terminated by user')
 rescue StandardError
-  puts 'Error running FileWatch'
+  abort('Error running FileWatch')
 end
