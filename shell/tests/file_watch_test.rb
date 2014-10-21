@@ -23,7 +23,7 @@ class FileWatchTest < Test::Unit::TestCase
       assert_equal file_name, 'tmpfile'
       block_ran = true
     end
-    watch.run
+    watch.run_async
 
     assert_equal watch.mode, :create
     assert_equal watch.delay, 100
@@ -43,7 +43,7 @@ class FileWatchTest < Test::Unit::TestCase
       file_names << file_name
       block_run_count += 1
     end
-    watch.run
+    watch.run_async
 
     assert_equal watch.mode, :create
     assert_equal watch.delay, 100
@@ -95,7 +95,7 @@ class FileWatchTest < Test::Unit::TestCase
       assert_equal file_name, 'tmpfile'
       block_ran = true
     end
-    watch.run
+    watch.run_async
 
     assert_equal watch.mode, :create
     assert_equal watch.delay, 100
@@ -118,7 +118,7 @@ class FileWatchTest < Test::Unit::TestCase
       assert file.include?('test')
       block_ran = true
     end
-    watch.run
+    watch.run_async
 
     assert_equal(:update, watch.mode)
     assert_equal(100, watch.delay)
@@ -150,7 +150,7 @@ class FileWatchTest < Test::Unit::TestCase
       assert file.include?('test')
       block_ran = true
     end
-    watch.run
+    watch.run_async
 
     assert_equal(:delete, watch.mode)
     assert_equal(100, watch.delay)

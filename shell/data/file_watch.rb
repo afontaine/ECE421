@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'thwait'
 require_relative 'file_watch/watcher'
 
 class FileWatch
@@ -18,24 +19,31 @@ class FileWatch
     end
   end
 
-  attr_reader :mode, :delay, :files, :threads
+  attr_reader :mode, :delay, :files
 
-  def run(out = $stdout)
-    watchers.each do |w|
-      threads << Thread.new do
-        $stdout = out
+  def run
+    @watchers.each do |w|
+      @threads << Thread.new do
         begin
           w.run
         rescue SystemCallError
-          puts "Error running file watch on #{w.file}"
-          return -1
+          puts "SystemCallError running file watch on #{w.file}"
+        rescue Test::Unit::AssertionFailedError => e
+          puts "Error: #{e.message.lines.first}"
         end
       end
     end
+
+    ThreadsWait.all_waits(*@threads)
+    @threads = []
+  end
+
+  def run_async
+    Thread.new { run }
   end
 
   def stop
-    watchers.each { |w| w.stop }
+    @watchers.each { |w| w.stop }
   end
 
   private
@@ -46,7 +54,5 @@ class FileWatch
     assert files.respond_to? :all?
     assert files.all? { |f| f.respond_to? :to_s }
   end
-
-  attr_reader :watchers
 
 end
