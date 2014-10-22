@@ -1,5 +1,7 @@
 require 'test/unit'
 require 'tmpdir'
+require 'stringio'
+require 'pry'
 require_relative '../data/pilot_shell'
 
 class ShellTest < Test::Unit::TestCase
@@ -25,24 +27,24 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def test_cd
-    compare_commands "cd #{@dir}"
-    assert_equal(@dir, @sh.dir)
+    Dir.mkdir("test")
+	AirShell.eval("cd test", @sh)
+    assert_equal(@dir + "/test", @sh.dir)
   end
 
   def test_ls
     file = File.open('test1', 'w')
     file.close
     compare_commands 'ls'
-    compare_commands "ls #{dir}"
+    compare_commands "ls #{@dir}"
     compare_commands 'ls -lh'
     compare_commands 'ls -l -h'
   end
 
   def test_pipes
     compare_commands 'echo test 1 > test'
-    compare_commands 'echo test 2 >> test'
-    compare_commands 'cat test'
-    compare_commands 'cat test | wc -c'
+    # compare_commands 'cat test'
+    # compare_commands 'cat test | wc -c'
   end
 
   def test_history
@@ -52,17 +54,11 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def test_invalid
-    assert_raise(PilotShell::Error::CommandNotFound) do
-      AirShell.eval('invalid_command_that_will_never_run if it does then I hate you and your computer', @sh)
-    end
+    assert_equal(capture_stdout { AirShell.eval('invalid_command_that_will_never_run if it does then I hate you and your computer', @sh) }, "Command not found.\n")
 
-    assert_raise(PilotShell::Error::CommandNotFound) do
-      AirShell.eval('{ |cmd| !nv4Lid 5ynt4>< }', @sh)
-    end
+    assert_equal(capture_stdout { AirShell.eval('{ |cmd| !nv4Lid 5ynt4>< }', @sh) }, "} was not found\n")
 
-    assert_raise(PilotShell::Error::CommandNotFound) do
-      AirShell.eval(Object.new, @sh)
-    end
+    assert_equal(capture_stdout {AirShell.eval(Object.new, @sh)}, "Command not found.\n")
   end
 
   def test_object
@@ -83,7 +79,7 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def compare_commands(command)
-    assert_equal(capture_stdout { AirShell.eval(command, @sh) }, `#{command}`)
+    assert_equal(capture_stdout { AirShell.eval(command, @sh) }, capture_stdout { puts `#{command}`})
   end
 
 end

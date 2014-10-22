@@ -63,6 +63,7 @@ module AirShell
 		def dir
 			Dir.getwd
 		end
+		attr_accessor :history
 	end
 
 	def self.prompt
@@ -71,12 +72,6 @@ module AirShell
 
 	def self.change_dir(dir)
 		Dir.chdir(dir)
-	end
-
-	def self.echo(message)
-		message.split.each do |m|
-			puts m
-		end
 	end
 
 	def self.define_variable(line)
@@ -97,6 +92,8 @@ module AirShell
 	end
 
 	def self.eval(line, shell)
+		line = line.to_s if line.respond_to?(:to_s)
+		shell.history.push(line)
 		self.replace_variables(line) if line.include?('$')
 		self.define_variable(line) if line.include?('=')
 		Kernel.exit if line == 'exit'
@@ -105,7 +102,7 @@ module AirShell
 		begin
 			shell.eval(line)
 		rescue Errno::ENOENT
-			self.echo(command[1..-1]) if command[0] == 'echo'
+			puts "Command not found." unless command[0] == 'cd' || line == 'exit'
 		rescue AirShell::FileNotFoundError => e
 			puts e.message
 		rescue ArgumentError
