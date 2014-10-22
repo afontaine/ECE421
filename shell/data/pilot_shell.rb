@@ -2,11 +2,17 @@ require 'shellwords'
 
 # Pretty fly for a ruby... thing\
 module AirShell
-	VARIABLES = {}
+
 
 	class FileNotFoundError < ArgumentError; end
 
 	class Pilot
+
+		def initialize
+			@history = []
+			@variables = {}
+		end
+
 		def pipe(commands, input = nil)
 			commands.split('|').reduce(input) do |data, e|
 				run_command(e, data)
@@ -87,6 +93,10 @@ module AirShell
 	def self.run_line(shell)
 		print self.prompt
 		line = gets.chomp
+		self.eval(line, shell)
+	end
+
+	def self.eval(line, shell)
 		self.replace_variables(line) if line.include?('$')
 		self.define_variable(line) if line.include?('=')
 		Kernel.exit if line == 'exit'

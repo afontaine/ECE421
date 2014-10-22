@@ -47,21 +47,21 @@ class ShellTest < Test::Unit::TestCase
 
   def test_history
     commands = ['ls', 'ls -lh', 'echo test']
-    commands.each { |cmd| @sh.eval(cmd) }
+    commands.each { |cmd| AirShell.eval(cmd, @sh) }
     assert_equal @sh.history, commands
   end
 
   def test_invalid
     assert_raise(PilotShell::Error::CommandNotFound) do
-      @sh.eval('invalid_command_that_will_never_run if it does then I hate you and your computer')
+      AirShell.eval('invalid_command_that_will_never_run if it does then I hate you and your computer', @sh)
     end
 
     assert_raise(PilotShell::Error::CommandNotFound) do
-      @sh.eval('{ |cmd| !nv4Lid 5ynt4>< }')
+      AirShell.eval('{ |cmd| !nv4Lid 5ynt4>< }', @sh)
     end
 
     assert_raise(PilotShell::Error::CommandNotFound) do
-      @sh.eval(Object.new)
+      AirShell.eval(Object.new, @sh)
     end
   end
 
@@ -83,7 +83,7 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def compare_commands(command)
-    assert_equal(capture_stdout { @sh.eval(command) }, `#{command}`)
+    assert_equal(capture_stdout { AirShell.eval(command, @sh) }, `#{command}`)
   end
 
 end
