@@ -7,7 +7,7 @@ class ShellTest < Test::Unit::TestCase
   def setup
     @dir = Dir.mktmpdir
     Dir.chdir(@dir)
-    @sh = PilotShell.new
+    @sh = AirShell::Pilot.new
     invariant
   end
 
@@ -83,7 +83,7 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def compare_commands(command)
-    assert_equal(capture_stdout { @sh.eval(command) }, capture_stdout { `#{command}` })
+    assert_equal(capture_stdout { @sh.eval(command) }, `#{command}`)
   end
 
 end
