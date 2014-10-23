@@ -41,9 +41,9 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def test_pipes
-    compare_commands 'echo test 1 > test'
+    assert_equal capture_stdout { AirShell.eval('echo test 1 > test', @sh) }, ""
     compare_commands 'cat test'
-    compare_commands 'cat test | wc -c'
+    assert_equal capture_stdout { AirShell.eval('cat test | wc -c', @sh) }.to_i, 7
   end
 
   def test_history
