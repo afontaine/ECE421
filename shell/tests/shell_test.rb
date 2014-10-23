@@ -2,7 +2,7 @@ require 'test/unit'
 require 'tmpdir'
 require 'stringio'
 require 'pry'
-require_relative '../data/pilot_shell'
+require_relative '../data/air_shell'
 
 class ShellTest < Test::Unit::TestCase
 
