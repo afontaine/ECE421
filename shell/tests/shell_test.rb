@@ -1,7 +1,6 @@
 require 'test/unit'
 require 'tmpdir'
 require 'stringio'
-require 'pry'
 require_relative '../data/air_shell'
 
 class ShellTest < Test::Unit::TestCase
@@ -21,7 +20,7 @@ class ShellTest < Test::Unit::TestCase
   def invariant
     assert !@sh.dir.empty?
   end
-
+  
   def test_echo
     compare_commands 'echo HI'
   end
@@ -43,8 +42,8 @@ class ShellTest < Test::Unit::TestCase
 
   def test_pipes
     compare_commands 'echo test 1 > test'
-    # compare_commands 'cat test'
-    # compare_commands 'cat test | wc -c'
+    compare_commands 'cat test'
+    compare_commands 'cat test | wc -c'
   end
 
   def test_history
@@ -53,12 +52,12 @@ class ShellTest < Test::Unit::TestCase
     assert_equal @sh.history, commands
   end
 
-  def test_invalid
+  def test_invalid_cmds
     assert_equal(capture_stdout { AirShell.eval('invalid_command_that_will_never_run if it does then I hate you and your computer', @sh) }, "Command not found.\n")
 
     assert_equal(capture_stdout { AirShell.eval('{ |cmd| !nv4Lid 5ynt4>< }', @sh) }, "} was not found\n")
 
-    assert_equal(capture_stdout { AirShell.eval(Object.new, @sh) }, "Command not found.\n")
+    assert_equal(capture_stdout { AirShell.eval(Object.new, @sh) }, "Command is invalid.\n")
   end
 
   def test_object

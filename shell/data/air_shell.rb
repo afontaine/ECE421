@@ -69,7 +69,7 @@ module AirShell
   end
 
   def self.prompt
-    "#{ENV['USER']}:8==D~ "
+    "#{ENV['USER']}:>>"
   end
 
   def self.change_dir(dir)
@@ -105,6 +105,8 @@ module AirShell
       shell.eval(line)
     rescue Errno::ENOENT
       puts "Command not found." unless command[0] == 'cd' || line == 'exit'
+    rescue Errno::EINVAL
+      puts 'Command is invalid.'
     rescue AirShell::FileNotFoundError => e
       puts e.message
     rescue ArgumentError
