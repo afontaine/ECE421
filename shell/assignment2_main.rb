@@ -6,6 +6,7 @@ require_relative 'data/file_watch'
 `ruby timer.rb --block 5 "hello"`
 
 # Watch for a modified file
+# command line also available: ruby file_watch.rb --help
 f = FileWatch.new(:modify, 'Gemfile') { |e| puts "hello" }
 f.run_async
 wait 5
