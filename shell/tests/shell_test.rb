@@ -28,7 +28,7 @@ class ShellTest < Test::Unit::TestCase
 
   def test_cd
     Dir.mkdir("test")
-	AirShell.eval("cd test", @sh)
+    AirShell.eval("cd test", @sh)
     assert_equal(@dir + "/test", @sh.dir)
   end
 
@@ -58,19 +58,23 @@ class ShellTest < Test::Unit::TestCase
 
     assert_equal(capture_stdout { AirShell.eval('{ |cmd| !nv4Lid 5ynt4>< }', @sh) }, "} was not found\n")
 
-    assert_equal(capture_stdout {AirShell.eval(Object.new, @sh)}, "Command not found.\n")
+    assert_equal(capture_stdout { AirShell.eval(Object.new, @sh) }, "Command not found.\n")
   end
 
   def test_object
     o = Object.new
-    def o.to_s; 'ls'; end
+
+    def o.to_s;
+      'ls';
+    end
+
     compare_commands o
   end
 
   def capture_stdout
     begin
       old_stdout = $stdout
-      $stdout = StringIO.new('','w')
+      $stdout = StringIO.new('', 'w')
       yield
       $stdout.string
     ensure
@@ -79,7 +83,7 @@ class ShellTest < Test::Unit::TestCase
   end
 
   def compare_commands(command)
-    assert_equal(capture_stdout { AirShell.eval(command, @sh) }, capture_stdout { puts `#{command}`})
+    assert_equal(capture_stdout { AirShell.eval(command, @sh) }, capture_stdout { puts `#{command}` })
   end
 
 end

@@ -10,11 +10,11 @@ def is_num?(str)
 end
 
 opts = GetoptLong.new(
-    ['--help', '-h', GetoptLong::NO_ARGUMENT],
-    ['--files', '-f', GetoptLong::REQUIRED_ARGUMENT],
-    ['--mode', '-m', GetoptLong::REQUIRED_ARGUMENT],
-    ['--delay', '-d', GetoptLong::OPTIONAL_ARGUMENT],
-    ['--cmd', '-c', GetoptLong::REQUIRED_ARGUMENT]
+  ['--help', '-h', GetoptLong::NO_ARGUMENT],
+  ['--files', '-f', GetoptLong::REQUIRED_ARGUMENT],
+  ['--mode', '-m', GetoptLong::REQUIRED_ARGUMENT],
+  ['--delay', '-d', GetoptLong::OPTIONAL_ARGUMENT],
+  ['--cmd', '-c', GetoptLong::REQUIRED_ARGUMENT]
 )
 
 files, command, mode, delay = nil, nil, nil, nil
@@ -41,7 +41,7 @@ file_watch -f "files to watch" -m mode -d delay -c "shell command to run with"
   Shell command to run upon trigger of mode
   All occurrences of %FILE_NAME% are replaced with the file name
 
-EOF
+      EOF
       exit(0)
     when '--files'
       abort('Non empty list of files must be provided') if arg == ''

@@ -83,13 +83,22 @@ class FileWatchTest < Test::Unit::TestCase
     block_ran = false
 
     o = Object.new
-    def o.to_sym; :create; end
+
+    def o.to_sym;
+      :create;
+    end
 
     o2 = Object.new
-    def o2.to_int; 100; end
+
+    def o2.to_int;
+      100;
+    end
 
     o3 = Object.new
-    def o3.to_s; 'tmpfile'; end
+
+    def o3.to_s;
+      'tmpfile';
+    end
 
     watch = FileWatch.new(o, o2, o3) do |file_name|
       assert_equal file_name, 'tmpfile'
