@@ -1,4 +1,4 @@
-module ThreadedMergeSort
+module ParallelMergeSort
 
   def self.sort(arr, time, &block)
     arr
@@ -7,7 +7,7 @@ module ThreadedMergeSort
   class CanceledError < ThreadError; end
   class TimeoutError < ThreadError; end
 
-  class Sorter
+  class ParallelSort
     def result
 
     end
