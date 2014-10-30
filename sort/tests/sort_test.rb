@@ -12,6 +12,16 @@ class SortTest < Test::Unit::TestCase
     @backwards_array = [4, 3, 2, 1]
   end
 
+  def invariants
+    assert_true(@empty_array.empty?)
+    assert_true(ThreadedMergeSort.sort(@sorted_array).each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
+    assert_false(ThreadedMergeSort.sort(@backwards_array).each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
+  end
+
   # Called after every test method runs. Can be used to tear
   # down fixture information.
 
@@ -20,17 +30,27 @@ class SortTest < Test::Unit::TestCase
   end
 
   def test_sort
-    assert_true(ThreadedMergeSort.sort(@arr).each_cons(2).reduce(true) do |result, val|
+    sorter = ThreadedMergeSort.sort(@arr)
+    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    assert_true(ThreadedMergeSort.sort(@sorted_array).each_cons(2).reduce(true) do |result, val|
+    sorter = ThreadedMergeSort.sort(@sorted_array)
+    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    assert_true(ThreadedMergeSort.sort(@empty_array).each_cons(2).reduce(true) do |result, val|
+    sorter = ThreadedMergeSort.sort(@empty_array)
+    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    assert_true(ThreadedMergeSort.sort(@backwards_array).each_cons(2).reduce(true) do |result, val|
+    sorter = ThreadedMergeSort.sort(@backwards_array)
+    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
+  end
+
+  def test_cancel
+    assert_raise(ThreadedMergeSort::CanceledError) do
+      ThreadedMergeSort.sort(@arr).cancel
+    end
   end
 end
