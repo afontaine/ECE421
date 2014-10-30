@@ -10,10 +10,15 @@ class SortTest < Test::Unit::TestCase
     @sorted_array = [1, 2, 3, 4, 5]
     @empty_array = []
     @backwards_array = [4, 3, 2, 1]
+    pre_conditions
+    invariants
   end
 
   def invariants
     assert_true(@empty_array.empty?)
+  end
+
+  def pre_conditions
     assert_true(ThreadedMergeSort.sort(@sorted_array).each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
@@ -26,7 +31,7 @@ class SortTest < Test::Unit::TestCase
   # down fixture information.
 
   def teardown
-    # Do nothing
+    invariants
   end
 
   def test_sort
