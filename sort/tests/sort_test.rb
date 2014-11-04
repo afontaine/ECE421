@@ -25,10 +25,10 @@ class SortTest < Test::Unit::TestCase
   end
 
   def pre_conditions
-    assert_true(ParallelMergeSort.sort(@sorted_array, 5000, &@sorter).each_cons(2).reduce(true) do |result, val|
+    assert_true(ParallelMergeSort.sort(@sorted_array, &@sorter).value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    assert_false(ParallelMergeSort.sort(@backwards_array, 5000, &@sorter).each_cons(2).reduce(true) do |result, val|
+    assert_false(ParallelMergeSort.sort(@backwards_array, &@sorter).value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
   end
@@ -41,45 +41,37 @@ class SortTest < Test::Unit::TestCase
   end
 
   def test_sort
-    sorter = ParallelMergeSort.sort(@arr, 5000, &@sorter)
-    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
+    sorter = ParallelMergeSort.sort(@arr, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    sorter = ParallelMergeSort.sort(@sorted_array, 5000, &@sorter)
-    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
+    sorter = ParallelMergeSort.sort(@sorted_array, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    sorter = ParallelMergeSort.sort(@empty_array, 5000, &@sorter)
-    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
+    sorter = ParallelMergeSort.sort(@empty_array, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-    sorter = ParallelMergeSort.sort(@backwards_array, 5000, &@sorter)
-    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
+    sorter = ParallelMergeSort.sort(@backwards_array, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
   end
 
   def test_cancel
-    assert_raise(ParallelMergeSort::CanceledError) do
-      ParallelMergeSort.sort(@arr, 5000, &@sorter).cancel
-    end
+    ParallelMergeSort.sort(@arr, &@sorter).kill
   end
 
   def test_block
-    sorter = ParallelMergeSort.sort(@arr, 5000, &@reverse_sorter)
-    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
+    sorter = ParallelMergeSort.sort(@arr, &@reverse_sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[1] <=> val[0]) <= 0)
     end)
 
-    sorter = ParallelMergeSort.sort(@arr, 5000) { |x, y| x <=> y }
-    assert_true(sorter.result.each_cons(2).reduce(true) do |result, val|
+    sorter = ParallelMergeSort.sort(@arr) { |x, y| x <=> y }
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
-  end
-
-  def test_timeout
-    assert_raise(ParallelMergeSort::TimeoutError) do
-      ParallelMergeSort.sort(@arr, 1, &@sorter)
-    end
   end
 end
