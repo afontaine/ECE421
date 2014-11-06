@@ -44,36 +44,36 @@ class SortTest < Test::Unit::TestCase
   def test_sort
     sorter = ParallelMergeSort.sort(@arr, &@sorter).value
     assert_equal @arr.sort, sorter
-    # assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
-    #   result && ((val[0] <=> val[1]) <= 0)
-    # end)
-    # sorter = ParallelMergeSort.sort(@sorted_array, &@sorter)
-    # assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
-    #   result && ((val[0] <=> val[1]) <= 0)
-    # end)
-    # sorter = ParallelMergeSort.sort(@empty_array, &@sorter)
-    # assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
-    #   result && ((val[0] <=> val[1]) <= 0)
-    # end)
-    # sorter = ParallelMergeSort.sort(@backwards_array, &@sorter)
-    # assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
-    #   result && ((val[0] <=> val[1]) <= 0)
-    # end)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
+    sorter = ParallelMergeSort.sort(@sorted_array, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
+    sorter = ParallelMergeSort.sort(@empty_array, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
+    sorter = ParallelMergeSort.sort(@backwards_array, &@sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
   end
 
   def test_cancel
-    # ParallelMergeSort.sort(@arr, &@sorter).kill
+    ParallelMergeSort.sort(@arr, &@sorter).kill
   end
 
   def test_block
-    # sorter = ParallelMergeSort.sort(@arr, &@reverse_sorter)
-    # assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
-    #   result && ((val[1] <=> val[0]) <= 0)
-    # end)
+    sorter = ParallelMergeSort.sort(@arr, &@reverse_sorter)
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
+      result && ((val[1] <=> val[0]) <= 0)
+    end)
 
-    # sorter = ParallelMergeSort.sort(@arr) { |x, y| x <=> y }
-    # assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
-    #   result && ((val[0] <=> val[1]) <= 0)
-    # end)
+    sorter = ParallelMergeSort.sort(@arr) { |x, y| x <=> y }
+    assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
+      result && ((val[0] <=> val[1]) <= 0)
+    end)
   end
 end
