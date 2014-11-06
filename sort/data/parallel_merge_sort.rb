@@ -2,12 +2,17 @@ require 'test/unit'
 require 'thwait'
 
 module ParallelMergeSort
-  include Test::Unit::Assertions
+  extend Test::Unit::Assertions
 
   def self.sort(arr, &comparator)
     pre_sort(arr)
     comparator ||= ->(a,b) { a <=> b }
-    spawn_thread(false) { psort(arr, &comparator) }.run
+
+    spawn_thread(false) do 
+      arr = psort(arr, &comparator)
+      post_sort(arr, &comparator)
+      arr
+    end.run
   end
 
   private
@@ -46,7 +51,16 @@ module ParallelMergeSort
   end
 
   def self.pre_sort(arr)
-    #assert arr.is_a? Array
+    assert(arr.is_a? Array)
+  end
+
+  def self.post_sort(arr)
+    puts "#{arr}"
+    result = arr.each_cons(2).reduce(true) do |result, val|
+      result && yield(val[0], val[1]) <= 0
+    end
+
+    assert result
   end
 
   def self.spawn_thread(add = true)

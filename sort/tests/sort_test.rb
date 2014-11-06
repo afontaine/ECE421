@@ -42,8 +42,7 @@ class SortTest < Test::Unit::TestCase
   end
 
   def test_sort
-    sorter = ParallelMergeSort.sort(@arr, &@sorter).value
-    assert_equal @arr.sort, sorter
+    sorter = ParallelMergeSort.sort(@arr, &@sorter)
     assert_true(sorter.value.each_cons(2).reduce(true) do |result, val|
       result && ((val[0] <=> val[1]) <= 0)
     end)
