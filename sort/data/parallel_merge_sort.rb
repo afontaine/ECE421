@@ -7,20 +7,16 @@ module ParallelMergeSort
   def self.sort(arr, &comparator)
     pre_sort(arr)
     comparator ||= ->(a,b) { a <=> b }
-    Thread.new { psort(arr, &comparator) }.run
+    spawn_thread(false) { psort(arr, &comparator) }.run
   end
 
   private
   def self.psort(arr, &comparator)
     return arr if arr.size <= 1
     middle = arr.size/2
-    th_left = Thread.new { psort(arr[0...middle], &comparator) }.run
-    th_right = Thread.new { psort(arr[middle...arr.size], &comparator) }.run
-    ThreadsWait.all_waits(th_left, th_right)
-    result = Array.new(arr.size, 0) 
-    pmerge(th_left.value, th_right.value, result, 0, &comparator)
-    puts "#{result}"
-    result
+    th_left = spawn_thread { psort(arr[0...middle], &comparator) }.run
+    th_right = spawn_thread { psort(arr[middle...arr.size], &comparator) }.run
+    pmerge(th_left.value, th_right.value, Array.new(arr.size, 0), 0, &comparator)
   end 
 
   def self.pmerge(left, right, result, cur_index, &comparator)
@@ -37,27 +33,34 @@ module ParallelMergeSort
         result[cur_index + 1] = left[0]
       end
     else 
-      j = find_index(right, left[left.size/2], &comparator)
-      th_left = Thread.new { pmerge(left[0...left.size/2], right[0...j], result, cur_index, &comparator) }.run
-      th_right = Thread.new { pmerge(left[left.size/2...left.size], right[j...right.size], result, cur_index + left.size/2 + j, &comparator) }.run
+      j = binary_search(right, left[left.size/2], &comparator)
+      th_left = spawn_thread { pmerge(left[0...left.size/2], right[0...j], result, cur_index, &comparator) }.run
+      th_right = spawn_thread { pmerge(left[left.size/2...left.size], right[j...right.size], result, cur_index + left.size/2 + j, &comparator) }.run
       ThreadsWait.all_waits(th_left, th_right)
     end
+    result
   end
 
   def self.binary_search(arr, x)
-    j = ([*arr.each_with_index].bsearch { |y,_| yield(y, x) > 0 } || [nil, arr.size]).last - 1
-    j = 0 if j < 0
-    j
-  end
-
-  def self.find_index(arr, x)
-    j = (arr.index { |y| yield(y, x) > 0 } || arr.size) - 1
-    j = 0 if j < 0
-    j
+    ([*arr.each_with_index].bsearch { |y,_| yield(y, x) > 0 } || [nil, arr.size]).last
   end
 
   def self.pre_sort(arr)
     #assert arr.is_a? Array
+  end
+
+  def self.spawn_thread(add = true)
+    th = Thread.new do 
+      Thread.current[:children] ||= []
+      begin
+        yield
+      ensure
+        Thread.current[:children].each { |th| th.kill }
+      end
+    end
+
+    Thread.current[:children] << th if add
+    th
   end
 
 end
