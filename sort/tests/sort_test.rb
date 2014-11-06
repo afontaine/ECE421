@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'timeout'
 require_relative '../data/parallel_merge_sort'
 
 class SortTest < Test::Unit::TestCase
@@ -62,6 +63,12 @@ class SortTest < Test::Unit::TestCase
 
   def test_cancel
     ParallelMergeSort.sort(@arr, &@sorter).kill
+  end
+
+  def test_timout
+    assert_raise(Timeout::Error) do
+      ParallelMergeSort::timed_sort(Array.new(10000) { rand }, 1, &:<=>)
+    end
   end
 
   def test_block

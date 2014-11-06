@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'timeout'
 require 'thwait'
 
 module ParallelMergeSort
@@ -15,6 +16,16 @@ module ParallelMergeSort
     end.run
   end
 
+  def self.timed_sort(arr, time, &comparator)
+    th = self.sort(arr, &comparator)
+    begin
+      Timeout::timeout(time) { th.value }
+    rescue Timeout::Error
+      th.kill
+      raise Timeout::Error
+    end
+  end
+
   private
   def self.psort(arr, &comparator)
     return arr if arr.size <= 1
@@ -22,7 +33,7 @@ module ParallelMergeSort
     th_left = spawn_thread { psort(arr[0...middle], &comparator) }.run
     th_right = spawn_thread { psort(arr[middle...arr.size], &comparator) }.run
     pmerge(th_left.value, th_right.value, Array.new(arr.size, 0), 0, &comparator)
-  end 
+  end
 
   def self.pmerge(left, right, result, cur_index, &comparator)
     if right.size > left.size
@@ -34,10 +45,10 @@ module ParallelMergeSort
         result[cur_index] = left[0]
         result[cur_index + 1] = right[0]
       else
-        result[cur_index] = right[0] 
+        result[cur_index] = right[0]
         result[cur_index + 1] = left[0]
       end
-    else 
+    else
       j = binary_search(right, left[left.size/2], &comparator)
       th_left = spawn_thread { pmerge(left[0...left.size/2], right[0...j], result, cur_index, &comparator) }.run
       th_right = spawn_thread { pmerge(left[left.size/2...left.size], right[j...right.size], result, cur_index + left.size/2 + j, &comparator) }.run
@@ -64,7 +75,7 @@ module ParallelMergeSort
   end
 
   def self.spawn_thread(add = true)
-    th = Thread.new do 
+    th = Thread.new do
       Thread.current[:children] ||= []
       begin
         yield
@@ -76,5 +87,4 @@ module ParallelMergeSort
     Thread.current[:children] << th if add
     th
   end
-
 end
