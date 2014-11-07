@@ -9,7 +9,7 @@ module ParallelMergeSort
     pre_sort(arr)
     comparator ||= ->(a,b) { a <=> b }
 
-    spawn_thread(false) do 
+    spawn_thread(false) do
       arr = psort(arr, &comparator)
       post_sort(arr, &comparator)
       arr
@@ -66,7 +66,6 @@ module ParallelMergeSort
   end
 
   def self.post_sort(arr)
-    puts "#{arr}"
     result = arr.each_cons(2).reduce(true) do |result, val|
       result && yield(val[0], val[1]) <= 0
     end
