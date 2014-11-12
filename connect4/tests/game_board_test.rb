@@ -2,16 +2,16 @@ require 'test/unit'
 require_relative '../data/model'
 require_relative '../data/model/player'
 require_relative '../data/model/game_token'
-require_relative '../data/model/game'
+require_relative '../data/model/game_board'
 
-class GameTest < Test::Unit::TestCase
+class GameBoardTest < Test::Unit::TestCase
 
   # Called before every test method runs. Can be used
   # to set up fixture information.
   def setup
     @andrew = Model::Player.new("Andrew")
     @jacob = Model::Player.new("Jacob")
-    @win = Model::Game([
+    @win = Model::GameBoard([
         [nil, nil, nil, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil, nil, nil],
@@ -21,7 +21,7 @@ class GameTest < Test::Unit::TestCase
         [Model::GameToken.new(@andrew), Model::GameToken.new(@andrew), Model::GameToken.new(@andrew),
          Model::GameToken.new(@andrew), nil, nil, nil],
     ])
-    @one_more = Model::Game([
+    @one_more = Model::GameBoard([
                                 [nil, nil, nil, nil, nil, nil, nil],
                                 [nil, nil, nil, nil, nil, nil, nil],
                                 [nil, nil, nil, nil, nil, nil, nil],
