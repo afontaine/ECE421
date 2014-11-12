@@ -1,4 +1,8 @@
 require 'test/unit'
+require_relative '../data/model'
+require_relative '../data/model/player'
+require_relative '../data/model/game_token'
+require_relative '../data/model/game'
 
 class GameTest < Test::Unit::TestCase
 
