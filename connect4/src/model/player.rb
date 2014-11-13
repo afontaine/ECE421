@@ -24,7 +24,7 @@ module Models
 
     private
     def pre_initialize(tokens, pattern)
-      assert tokens.respond_to?(:each) && tokens.respond_to?(:to_a) && tokens.respond_to(:size)
+      assert tokens.respond_to?(:keys) && tokens.respond_to?(:key?) && tokens.respond_to(:size)
       assert pattern.respond_to?(:each) && pattern.respond_to?(:to_a) && pattern.respond_to(:size)
     end
 
