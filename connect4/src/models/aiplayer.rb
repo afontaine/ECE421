@@ -2,7 +2,7 @@ require_relative 'player'
 
 module Models
 
-  def AIPlayer < Models::Player
+  class AIPlayer < Player
 
     private
     def determine_move(board)
