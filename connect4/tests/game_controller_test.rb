@@ -14,7 +14,7 @@ class GameControllerTest < Test::Unit::TestCase
     controller = Controllers::GameController.new(@board, @andrew, @jacob)
     controller.make_move(@andrew)
     assert_equal(20, @andrew.tokens[:O])
-    assert_equal(@board[0].first, :O)
+    assert_equal(@board[0,0], :O)
   end
 
   def test_win
