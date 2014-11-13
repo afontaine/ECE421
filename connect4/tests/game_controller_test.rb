@@ -10,9 +10,15 @@ class GameControllerTest < Test::Unit::TestCase
     @board = Models::Board.new(6, 7)
   end
 
-  def test_fail
+  def test_move
     controller = Controllers::GameController.new(@board, @andrew, @jacob)
     controller.make_move(@andrew)
     assert_equal(20, @andrew.tokens[:O])
+  end
+
+  def test_win
+    controller = Controllers::GameController.new(@board, @andrew, @jacob)
+    4.times { controller.make_move(@andrew) }
+    assert_true(@board.win?(@andrew.pattern))
   end
 end
