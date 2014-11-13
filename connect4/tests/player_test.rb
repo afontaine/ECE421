@@ -14,5 +14,6 @@ class PlayerTest < Test::Unit::TestCase
     token, column = player.get_move(game)
     assert_equal :O, token
     assert_equal 0, column
+    assert_equal 21, player.tokens[:O]
   end
 end
