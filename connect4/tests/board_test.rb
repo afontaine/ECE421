@@ -1,13 +1,13 @@
 require 'test/unit'
-require_relative '../src/model'
+require_relative '../src/models'
 
-class GameBoardTest < Test::Unit::TestCase
+class BoardTest < Test::Unit::TestCase
   def setup
     @andrew = Model::Player.new({X: 21}, [:X] * 4)
     @jacob = Model::Player.new({O: 21}, [:O] * 4)
     @win = Model::Board.new(6, 7)
     4.times { @win[4] = :X }
-    @one_more = Model::GameBoard.new(231454521, 789456)
+    @one_more = Model::Board.new(6, 7)
     3.times { @one_more[4] = :O }
   end
 
@@ -26,7 +26,7 @@ class GameBoardTest < Test::Unit::TestCase
 
   def test_invalid_column
     assert_raise(Model::IndexError) { @win[10] =:X }
-    assert_raise(Model::FullColumnError) { 10.times { win[4] = :X } }
+    assert_raise(Model::ColumnFullError) { 10.times { win[4] = :X } }
     assert_nothing_raised { @win[3] = :X }
     assert_nothing_raised { 7.times { @win[0] = :O } }
   end
