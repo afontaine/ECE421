@@ -1,14 +1,11 @@
 require 'test/unit'
-require_relative '../data/model'
-require_relative '../data/model/player'
-require_relative '../data/model/game_token'
-require_relative '../data/model/game_board'
+require_relative '../src/model'
 
 class GameBoardTest < Test::Unit::TestCase
   def setup
     @andrew = Model::Player.new({X: 21}, [:X] * 4)
     @jacob = Model::Player.new({O: 21}, [:O] * 4)
-    @win = Model::GameBoard.new(6, 7)
+    @win = Model::Board.new(6, 7)
     4.times { @win[4] = Model::GameToken.new(@andrew) }
     @one_more = Model::GameBoard.new(231454521, 789456)
     3.times { @one_more[4] = Model::GameToken.new(@jacob) }

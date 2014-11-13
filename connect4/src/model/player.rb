@@ -1,5 +1,8 @@
+require 'test/unit'
+
 module Models
   class Player
+    include Test::Unit::Assertions
 
     def initialize(tokens, pattern)
       pre_initialize(tokens, pattern)

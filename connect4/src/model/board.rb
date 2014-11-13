@@ -1,6 +1,8 @@
+require 'test/unit'
 
 module Models
   class Board
+    include Test::Unit::Assertions
 
     def initialize(rows, columns)
       pre_initialize(rows, columns)
