@@ -18,7 +18,7 @@ module Models
       invariant
       pre_get_move(board)
       value = determine_move(board)
-      post_get_move(value)
+      post_get_move(board, value)
       invariant
     end
 
@@ -32,9 +32,9 @@ module Models
       assert board.is_a? Board
     end
 
-    def post_get_move(value)
+    def post_get_move(board, value)
       assert value.respond_to(:to_i)
-      assert value.to_i.abs.between?(0, board.column_size - 1)
+      assert !board.column_full?(value.to_i)
     end
 
     def invariant

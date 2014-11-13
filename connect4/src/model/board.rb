@@ -52,7 +52,7 @@ module Models
     def column_full?(column)
       invariant
       pre_column_full(column)
-      value = !@board[column].last.nil?
+      value = !@board[column.to_i].last.nil?
       invariant
       value
     end
@@ -81,7 +81,7 @@ module Models
 
     def pre_column_full(column)
       assert column.respond_to? :to_i
-      assert column < @board.size
+      assert column.to_i.abs.between?(0, @column_size - 1)
     end
 
     def pre_intialize(rows, columns)
