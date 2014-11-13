@@ -1,4 +1,5 @@
 require 'test/unit'
+require_relative 'errors'
 
 module Models
   class Board
@@ -45,7 +46,7 @@ module Models
     alias_method :[]=, :set
 
     def win?(pattern)
-      
+      false
     end
 
     def column_full?(column)
@@ -70,6 +71,7 @@ module Models
     def pre_set(column, token)
       raise ColumnFullError if column_full?(column)
       assert token.respond_to :to_sym
+      raise IndexError unless column.to_i.abs.between?(0, @column_size - 1)
     end
 
     def post_set(column, token)
@@ -94,9 +96,6 @@ module Models
       assert @board.size == @column_size
       assert @board[0].size == @row_size
     end
-
-    class ColumnFullError < StandardError; end
-    class IndexError < StandardError; end
 
   end
 
