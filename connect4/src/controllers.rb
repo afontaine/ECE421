@@ -1,0 +1,1 @@
+require_relative 'controllers/game_controller'

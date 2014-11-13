@@ -15,14 +15,8 @@ module Models
 
     attr_reader :row_size, :column_size
 
-    def each(&block)
-      invariant
-      return to_enum :each unless block_given?
-
-      @block.each do |column|
-        column.each(&block)
-      end
-      invariant
+    def board
+      @board.reduce([]) { |arr, col| arr << col.dup; arr }
     end
 
     def get(row, column)
@@ -64,28 +58,27 @@ module Models
     end
 
     def pre_get(row, column)
-      assert row.respond_to(:to_i) && column.respond_to(:to_i)
+      assert row.respond_to?(:to_i) && column.respond_to?(:to_i)
       raise IndexError unless (row.to_i.abs.between?(0, @row_size - 1)) && (column.to_i.abs.between?(0, @column_size - 1))
     end
 
     def pre_set(column, token)
       raise ColumnFullError if column_full?(column)
-      assert token.respond_to :to_sym
-      raise IndexError unless column.to_i.abs.between?(0, @column_size - 1)
+      assert token.respond_to? :to_sym
     end
 
     def post_set(column, token)
-      row = @board[column].select { |x| !x.nil? }.last
-      assert row[column] == token
+      other = @board[column].select { |x| !x.nil? }.last
+      assert token == other
     end
 
     def pre_column_full(column)
-      assert column.respond_to? :to_i
-      assert column.to_i.abs.between?(0, @column_size - 1)
+      assert column.respond_to? :to_i    
+      raise IndexError unless column.to_i.abs.between?(0, @column_size - 1)
     end
 
-    def pre_intialize(rows, columns)
-      assert rows.respond_to(:to_i) && columns.respond_to(:to_i)
+    def pre_initialize(rows, columns)
+      assert rows.respond_to?(:to_i) && columns.respond_to?(:to_i)
       rows, columns = rows.to_i, columns.to_i
       assert rows > 0 && columns > 0
     end

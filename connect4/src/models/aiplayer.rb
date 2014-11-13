@@ -7,7 +7,7 @@ module Models
     private
     def determine_move(board)
       # Jacob's pattented First-Avail-Column AI (TM)
-      token = @tokens.first.first
+      token = @tokens.select { |_, val| val > 0 }.first.first
       column = -1
       board.column_size.times do |j|
         unless board.column_full?(j)
@@ -15,7 +15,7 @@ module Models
           break
         end
       end
-      token, column
+      return token, column
     end
   end
 

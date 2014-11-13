@@ -1,4 +1,6 @@
 require 'test/unit'
+require_relative '../src/models'
+require_relative '../src/controllers'
 
 class GameControllerTest < Test::Unit::TestCase
 
