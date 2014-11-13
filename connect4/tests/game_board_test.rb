@@ -5,51 +5,26 @@ require_relative '../data/model/game_token'
 require_relative '../data/model/game_board'
 
 class GameBoardTest < Test::Unit::TestCase
-
-  # Called before every test method runs. Can be used
-  # to set up fixture information.
   def setup
-    @andrew = Model::Player.new("Andrew")
-    @jacob = Model::Player.new("Jacob")
-    @win = Model::GameBoard([
-        [nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil],
-        [Model::GameToken.new(@andrew), Model::GameToken.new(@andrew), Model::GameToken.new(@andrew),
-         Model::GameToken.new(@andrew), nil, nil, nil],
-    ])
-    @one_more = Model::GameBoard([
-                                [nil, nil, nil, nil, nil, nil, nil],
-                                [nil, nil, nil, nil, nil, nil, nil],
-                                [nil, nil, nil, nil, nil, nil, nil],
-                                [nil, nil, nil, nil, nil, nil, nil],
-                                [nil, nil, nil, nil, nil, nil, nil],
-                                [nil, nil, nil, nil, nil, nil, nil],
-                                [Model::GameToken.new(@andrew), Model::GameToken.new(@andrew),
-                                 Model::GameToken.new(@andrew), nil, nil, nil, nil],
-                            ])
-  end
-
-  # Called after every test method runs. Can be used to tear
-  # down fixture information.
-
-  def teardown
-    # Do nothing
+    @andrew = Model::Player.new({X: 21}, [:X] * 4)
+    @jacob = Model::Player.new({O: 21}, [:O] * 4)
+    @win = Model::GameBoard.new()
+    4.times { @win[4] = Model::GameToken.new(@andrew) }
+    @one_more = Model::GameBoard.new()
+    3.times { @one_more[4] = Model::GameToken.new(@jacob) }
   end
 
   def test_win
-    assert_true(@win.over?)
-    assert_equal(@andrew, @win.winner)
+    assert_true(@win.win?(@andrew.pattern))
+    assert_false(@win.win?(@jacob.pattern))
   end
 
   def test_move
-    assert_false(@one_more.over?)
-    @one_more[4] = Model::GameToken.new(@andrew)
-    assert_true(@one_more.over?)
-    assert_equal(@andrew, @one_more.winner)
+    assert_false(@one_more.win?(@andrew.pattern))
+    assert_false(@one_more.win?(@jacob.pattern))
+    @one_more[4] = Model::GameToken.new(@jacob)
+    assert_true(@one_more.win?(@jacob.pattern))
+    assert_false(@one_more.win?(@andrew.pattern))
   end
 
 

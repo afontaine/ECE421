@@ -1,24 +1,10 @@
 require 'test/unit'
+require_relative '../data/model/player'
 
 class PlayerTest < Test::Unit::TestCase
-
-  # Called before every test method runs. Can be used
-  # to set up fixture information.
-  def setup
-    # Do nothing
-  end
-
-  # Called after every test method runs. Can be used to tear
-  # down fixture information.
-
-  def teardown
-    # Do nothing
-  end
-
-  # Fake test
   def test_player
-    andrew = Model::Player("Andrew", "FF0000")
-    assert_equal("Andrew", andrew.name)
-    assert_equal("FF0000", andrew.color)
+    andrew = Model::Player({X: 21}, [:X] * 4)
+    assert_equal({X: 21}, andrew.tokens)
+    assert_equal([:X, :X, :X, :X], andrew.pattern)
   end
 end
