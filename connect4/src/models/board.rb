@@ -15,6 +15,16 @@ module Models
 
     attr_reader :row_size, :column_size
 
+    def each(&block)
+      invariant
+      return to_enum :each unless block_given?
+
+      @block.each do |column|
+        column.each(&block)
+      end
+      invariant
+    end
+
     def board
       @board.reduce([]) { |arr, col| arr << col.dup; arr }
     end
@@ -40,6 +50,8 @@ module Models
     alias_method :[]=, :set
 
     def win?(pattern)
+      return true if @board.any? { |a| a.each_cons(4).any? { |a| a == pattern } }
+
       false
     end
 
@@ -65,6 +77,7 @@ module Models
     def pre_set(column, token)
       raise ColumnFullError if column_full?(column)
       assert token.respond_to? :to_sym
+      raise IndexError unless column.to_i.abs.between?(0, @column_size - 1)
     end
 
     def post_set(column, token)
