@@ -14,6 +14,15 @@ class BoardTest < Test::Unit::TestCase
   def test_win
     assert_true(@win.win?(@andrew.pattern))
     assert_false(@win.win?(@jacob.pattern))
+    board = Models::Board.new(6, 7)
+    4.times { |i| board[i] = :X }
+    assert_true(board.win?(@andrew.pattern))
+    board = Models::Board.new(6, 7)
+    4.times do |i|
+      i.times { board[i] = :O }
+      board[i] = :X
+    end
+    assert_true(board.win?(@andrew.pattern))
   end
 
   def test_move

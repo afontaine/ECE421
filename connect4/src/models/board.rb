@@ -51,8 +51,21 @@ module Models
 
     def win?(pattern)
       return true if @board.any? { |a| a.each_cons(4).any? { |a| a == pattern } }
-
+      return true if each_row.any? { |r| r.each_cons(4).any? { |r| r == pattern } }
       false
+    end
+
+    def each_row
+      invariant
+      return to_enum :each_row unless block_given?
+      @row_size.times do |i|
+        row = []
+        @column_size.times do |j|
+          row << get(i, j)
+        end
+        yield row
+      end
+      invariant
     end
 
     def column_full?(column)
