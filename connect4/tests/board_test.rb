@@ -23,6 +23,13 @@ class BoardTest < Test::Unit::TestCase
       board[i] = :X
     end
     assert_true(board.win?(@andrew.pattern))
+
+    board = Models::Board.new(6, 7)
+    3.downto(0) do |j|
+      j.times { board[3 - j] = :X }
+      board[3 - j] = :O
+    end
+    assert_true(board.win?(@jacob.pattern))
   end
 
   def test_move

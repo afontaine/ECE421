@@ -19,7 +19,7 @@ module Models
       invariant
       return to_enum :each unless block_given?
 
-      @block.each do |column|
+      @board.each do |column|
         column.each(&block)
       end
       invariant
@@ -52,6 +52,7 @@ module Models
     def win?(pattern)
       return true if @board.any? { |a| a.each_cons(4).any? { |a| a == pattern } }
       return true if each_row.any? { |r| r.each_cons(4).any? { |r| r == pattern } }
+      return true if each_diagonal_up.any? { |d| d.each_cons(4).any? { |d| d == pattern } }
       false
     end
 
@@ -59,11 +60,28 @@ module Models
       invariant
       return to_enum :each_row unless block_given?
       @row_size.times do |i|
-        row = []
-        @column_size.times do |j|
+        row =  @column_size.times.reduce([]) do |row, j|
           row << get(i, j)
         end
         yield row
+      end
+      invariant
+    end
+
+    def each_diagonal_up
+      invariant
+      return to_enum :each_diagonal_up unless block_given?
+      @column_size.times do |j|
+        diag = (j...@column_size).zip(0...@row_size).reduce([]) do |diag, x|
+          diag << get(x[1], x[0])
+        end
+        yield diag
+      end
+      @row_size.times do |i|
+        diag = (i...@row_size).zip(0...@column_size).reduce([]) do |diag, x|
+          diag << get(x[0], x[1])
+        end
+        yield diag
       end
       invariant
     end
