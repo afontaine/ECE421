@@ -6,6 +6,7 @@ GEM
       power_assert
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES

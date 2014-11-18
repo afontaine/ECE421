@@ -1,15 +1,19 @@
 require 'test/unit'
+require 'gtk2'
 require_relative '../models'
 
 module Controllers
   class GameController
     include Test::Unit::Assertions
 
-    def initialize(board, player, opponent)
+    def initialize(board, player, opponent, builder, skin)
       pre_initialize(board, player, opponent)
       @board = board
       @player = player
       @opponent = opponent
+      @builder = builder
+      @skin = skin
+      init_board
       invariant
     end
 
@@ -32,7 +36,7 @@ module Controllers
       pre_make_move(player)
       token, column = player.get_move(@board)
       @board[column] = token
-      player.tokens[token] -= 1;
+      player.tokens[token] -= 1
       post_make_move(player, token)
       invariant
     end
@@ -42,6 +46,19 @@ module Controllers
       assert board.is_a? Models::Board
       assert player.is_a?  Models::Player
       assert opponent.is_a?  Models::Player
+    end
+
+    def init_board
+      @board.row_size.times do |i|
+        @board.column_size.times do |j|
+          @builder['token_' + i.to_s + j.to_s].file = @skin[:empty]
+        end
+      end
+    end
+
+    def set_board_token(token, row, column)
+      @board[column] = token
+      @builder['token_' + row.to_s + column.to_s].file = @skin[token]
     end
 
     def pre_make_move(player)
