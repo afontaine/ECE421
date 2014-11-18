@@ -6,16 +6,13 @@ module Controllers
   class GameController
     include Test::Unit::Assertions
 
-    def initialize(board, game_name,  player, opponent, builder, skin)
-      pre_initialize(board, player, opponent)
-      @board = board
-      @player = player
-      @opponent = opponent
+    def initialize(game_name, builder, skin)
+      @game_name = game_name
       @builder = builder
       @skin = skin
-      init_board
-      init_buttons
-      init_messages(game_name)
+      start_connect_4 if game_name == :'Connect 4'
+      start_otto_toot if game_name == :'OTTO TOOT'
+      pre_initialize(@board, @player, @opponent)
       invariant
     end
 
@@ -43,12 +40,37 @@ module Controllers
       invariant
     end
 
-    def on_new_game_clicked(button)
+    def start_connect_4
+      @player = Models::Player.new({X: 21}, [:X] * 4)
+      @opponent = Models::AIPlayer.new({O: 21}, [:O] * 4)
+      @board = Models::Board.new(6, 7)
+      init_messages(@game_name.to_s)
+      init_board
+      init_buttons
+    end
 
+    def start_otto_toot
+      @player = Models::Player.new({T: 11, O: 10}, [:T, :O, :O, :T])
+      @opponent = Models::AIPlayer.new({T: 10, O: 11}, [:O, :T, :T, :O])
+      @board = Models::Board.new(6, 7)
+      init_messages(@game_name.to_s)
+      init_board
+      init_buttons
+    end
+
+    def on_new_game_clicked(button)
+      start_connect_4 if @game_name == :'Connect 4'
+      start_otto_toot if @game_name == :'OTTO TOOT'
     end
 
     def on_switch_game_clicked(button)
-
+      if @game_name == :'OTTO TOOT'
+        @game_name = :'Connect 4'
+        start_connect_4
+      elsif @game_name == :'Connect 4'
+        @game_name = :'OTTO TOOT'
+        start_otto_toot
+      end
     end
 
     def on_token_clicked(button)
