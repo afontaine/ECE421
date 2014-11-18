@@ -87,6 +87,7 @@ module Controllers
         @player.tokens[token] -= 1
         update_token_message
         end_game if game_over
+        return if game_over
         make_move(@opponent)
         end_game if game_over
       end
