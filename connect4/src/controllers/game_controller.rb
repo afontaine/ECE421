@@ -118,7 +118,7 @@ module Controllers
         when Controllers::ACTION_SWITCH_GAME
           on_switch_game_clicked(nil)
         when Gtk::Dialog::RESPONSE_CLOSE
-          Gtk::main_exit
+          Gtk::main_quit
         else
           on_new_game_clicked(nil)
       end
