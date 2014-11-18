@@ -6,7 +6,7 @@ module Controllers
   class GameController
     include Test::Unit::Assertions
 
-    def initialize(board, player, opponent, builder, skin)
+    def initialize(board, game_name,  player, opponent, builder, skin)
       pre_initialize(board, player, opponent)
       @board = board
       @player = player
@@ -14,6 +14,8 @@ module Controllers
       @builder = builder
       @skin = skin
       init_board
+      init_buttons
+      init_messages(game_name)
       invariant
     end
 
@@ -41,6 +43,17 @@ module Controllers
       invariant
     end
 
+    def on_new_game_clicked(button)
+    end
+
+    def on_switch_game_clicked(button)
+
+    end
+
+    def on_game_window_destroy(*args)
+      Gtk.main_quit
+    end
+
     private
     def pre_initialize(board, player, opponent)
       assert board.is_a? Models::Board
@@ -53,6 +66,41 @@ module Controllers
         @board.column_size.times do |j|
           @builder['token_' + i.to_s + j.to_s].file = @skin[:empty]
         end
+      end
+    end
+
+    def init_buttons
+      @board.column_size.times do |i|
+        j = 0
+        @player.tokens.keys.each do |key|
+          btn = @builder['button_' + i.to_s + j.to_s]
+          set_button(btn, key, j)
+          j += 1
+        end
+        (j...2).each do |k|
+          btn = @builder['button_' + i.to_s + k.to_s]
+          set_button(btn, :empty, k)
+        end
+      end
+    end
+
+    def init_messages(game)
+      @builder['game_label'].label = 'Playing ' + game
+      update_token_message
+    end
+
+    def update_token_message
+      @builder['token_label'].label = @player.tokens.map do |k,v|
+        "#{k}: #{v}"
+      end.join('\n')
+    end
+
+    def set_button(button, token, j)
+      if j >= @player.tokens.size
+        button.set_property(:visible, false)
+      else
+        button.set_property(:visible, true)
+        button.label = token.to_s
       end
     end
 
