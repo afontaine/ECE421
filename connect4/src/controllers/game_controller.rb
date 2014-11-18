@@ -13,6 +13,20 @@ module Controllers
       invariant
     end
 
+    def game
+      while !@board.win?(@player.pattern) || !@board.win?(@opponent.pattern) do
+        make_move(@player)
+        break if @observers.each(&:update)
+        make_move(@opponent)
+        break if @observers.any?(&:update)
+      end
+    end
+
+    def add_observer(observer)
+      @observers ||= []
+      @observers << observer
+    end
+
     def make_move(player)
       invariant
       pre_make_move(player)
