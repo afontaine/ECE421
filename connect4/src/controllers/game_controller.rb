@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'gtk2'
+require 'thread'
 require_relative '../models'
 
 module Controllers
@@ -10,6 +11,7 @@ module Controllers
       @game_name = game_name
       @builder = builder
       @skin = skin
+      @button_lock = Mutex.new
       start_connect_4 if game_name == :'Connect 4'
       start_otto_toot if game_name == :'OTTO TOOT'
       pre_initialize(@board, @player, @opponent)
@@ -74,12 +76,27 @@ module Controllers
     end
 
     def on_token_clicked(button)
-      token = button.label.to_sym
-      column = button.builder_name[-2].to_i
-      return unless valid_move?(token, column)
-      set_board_token(token, column)
-      @player.tokens[token] -= 1
-      update_token_message
+      return if @button_lock.locked?
+      @button_lock.synchronize do
+        token = button.label.to_sym
+        column = button.builder_name[-2].to_i
+        return unless valid_move?(token, column)
+        set_board_token(token, column)
+        @player.tokens[token] -= 1
+        update_token_message
+        check_end
+        make_move(@opponent)
+        check_end
+      end
+    end
+
+    def check_end
+      end_game(:win) if @board.win?(@player.pattern)
+      end_game(:lost) if @board.win?(@player.pattern)
+    end
+
+    def end_game(scenario)
+
     end
 
     def on_game_window_destroy(*args)
@@ -102,6 +119,7 @@ module Controllers
     end
 
     def init_buttons
+      @button_lock.unlock if @button_lock.locked?
       @board.column_size.times do |i|
         j = 0
         @player.tokens.keys.each do |key|
@@ -117,7 +135,7 @@ module Controllers
     end
 
     def init_messages(game)
-      @builder['game_label'].label = 'Playing ' + game
+      @builder['game_label'].label = "Playing #{game}\nWin pattern: #{@player.pattern.map(&:to_s).join(', ')}"
       update_token_message
     end
 
