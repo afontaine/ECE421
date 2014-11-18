@@ -1,4 +1,4 @@
-require 'test/unit'
+require 'test/unit/assertions'
 require_relative 'errors'
 
 module Models

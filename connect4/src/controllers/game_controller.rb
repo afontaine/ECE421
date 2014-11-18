@@ -1,4 +1,4 @@
-require 'test/unit'
+require 'test/unit/assertions'
 require 'gtk2'
 require 'thread'
 require_relative '../models'
