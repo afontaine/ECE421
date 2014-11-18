@@ -43,9 +43,11 @@ module Models
       pre_set(column, token)
       column = column.to_i
       token = token.to_sym
-      @board[column][next_available_row(column)] = token
+      row = next_available_row(column)
+      @board[column][row] = token
       post_set(column, token)
       invariant
+      row
     end
     alias_method :[]=, :set
 

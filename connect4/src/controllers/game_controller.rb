@@ -37,17 +37,27 @@ module Controllers
       invariant
       pre_make_move(player)
       token, column = player.get_move(@board)
-      @board[column] = token
+      set_board_token(token, column)
       player.tokens[token] -= 1
       post_make_move(player, token)
       invariant
     end
 
     def on_new_game_clicked(button)
+
     end
 
     def on_switch_game_clicked(button)
 
+    end
+
+    def on_token_clicked(button)
+      token = button.label.to_sym
+      column = button.builder_name[-2].to_i
+      return unless valid_move?(token, column)
+      set_board_token(token, column)
+      @player.tokens[token] -= 1
+      update_token_message
     end
 
     def on_game_window_destroy(*args)
@@ -74,12 +84,12 @@ module Controllers
         j = 0
         @player.tokens.keys.each do |key|
           btn = @builder['button_' + i.to_s + j.to_s]
-          set_button(btn, key, j)
+          set_button(btn, key)
           j += 1
         end
         (j...2).each do |k|
           btn = @builder['button_' + i.to_s + k.to_s]
-          set_button(btn, :empty, k)
+          set_button(btn, :empty)
         end
       end
     end
@@ -92,11 +102,11 @@ module Controllers
     def update_token_message
       @builder['token_label'].label = @player.tokens.map do |k,v|
         "#{k}: #{v}"
-      end.join('\n')
+      end.join("\n")
     end
 
-    def set_button(button, token, j)
-      if j >= @player.tokens.size
+    def set_button(button, token)
+      if token == :empty
         button.set_property(:visible, false)
       else
         button.set_property(:visible, true)
@@ -104,8 +114,12 @@ module Controllers
       end
     end
 
-    def set_board_token(token, row, column)
-      @board[column] = token
+    def valid_move?(token, column)
+      @player.tokens[token] > 0 && !@board.column_full?(column)
+    end
+
+    def set_board_token(token, column)
+      row = @board.set(column, token)
       @builder['token_' + row.to_s + column.to_s].file = @skin[token]
     end
 

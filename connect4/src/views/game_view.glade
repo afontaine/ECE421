@@ -16,14 +16,14 @@
             <property name="n_rows">6</property>
             <property name="n_columns">7</property>
             <child>
-              <object class="GtkImage" id="token_00">
+              <object class="GtkImage" id="token_50">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
               </object>
             </child>
             <child>
-              <object class="GtkImage" id="token_01">
+              <object class="GtkImage" id="token_51">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -34,7 +34,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_03">
+              <object class="GtkImage" id="token_53">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -45,7 +45,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_02">
+              <object class="GtkImage" id="token_52">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -56,7 +56,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_04">
+              <object class="GtkImage" id="token_54">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -67,7 +67,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_06">
+              <object class="GtkImage" id="token_56">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -78,7 +78,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_05">
+              <object class="GtkImage" id="token_55">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -86,143 +86,6 @@
               <packing>
                 <property name="left_attach">5</property>
                 <property name="right_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_10">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_11">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_13">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_20">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_23">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_12">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_15">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">5</property>
-                <property name="right_attach">6</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_30">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_14">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_16">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">6</property>
-                <property name="right_attach">7</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_21">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
               </packing>
             </child>
             <child>
@@ -232,71 +95,8 @@
                 <property name="stock">gtk-missing-image</property>
               </object>
               <packing>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_50">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_22">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_32">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_31">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="token_25">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="left_attach">5</property>
-                <property name="right_attach">6</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
               </packing>
             </child>
             <child>
@@ -308,12 +108,86 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_24">
+              <object class="GtkImage" id="token_43">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_30">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_33">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_42">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_45">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="right_attach">6</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_20">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_44">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -321,12 +195,12 @@
               <packing>
                 <property name="left_attach">4</property>
                 <property name="right_attach">5</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_26">
+              <object class="GtkImage" id="token_46">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -334,19 +208,80 @@
               <packing>
                 <property name="left_attach">6</property>
                 <property name="right_attach">7</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_34">
+              <object class="GtkImage" id="token_31">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_10">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_00">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_32">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_22">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_21">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
               </packing>
@@ -360,12 +295,77 @@
               <packing>
                 <property name="left_attach">5</property>
                 <property name="right_attach">6</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_11">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_34">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_36">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">6</property>
+                <property name="right_attach">7</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_24">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_51">
+              <object class="GtkImage" id="token_25">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="right_attach">6</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="token_01">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -378,7 +378,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_36">
+              <object class="GtkImage" id="token_26">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -391,7 +391,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_33">
+              <object class="GtkImage" id="token_23">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -404,7 +404,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_43">
+              <object class="GtkImage" id="token_13">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -417,7 +417,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_45">
+              <object class="GtkImage" id="token_15">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -430,7 +430,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_42">
+              <object class="GtkImage" id="token_12">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -443,7 +443,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_46">
+              <object class="GtkImage" id="token_16">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -456,7 +456,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_44">
+              <object class="GtkImage" id="token_14">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -469,7 +469,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_53">
+              <object class="GtkImage" id="token_03">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -482,7 +482,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_54">
+              <object class="GtkImage" id="token_04">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -495,7 +495,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_55">
+              <object class="GtkImage" id="token_05">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -508,7 +508,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_52">
+              <object class="GtkImage" id="token_02">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -521,7 +521,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="token_56">
+              <object class="GtkImage" id="token_06">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
@@ -556,6 +556,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -570,6 +571,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -590,6 +592,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -604,6 +607,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -628,6 +632,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -642,6 +647,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -666,6 +672,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -680,6 +687,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -704,6 +712,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -718,6 +727,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -742,6 +752,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -756,6 +767,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -780,6 +792,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -794,6 +807,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_token_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
