@@ -53,6 +53,7 @@ module Models
       return true if @board.any? { |a| a.each_cons(4).any? { |a| a == pattern } }
       return true if each_row.any? { |r| r.each_cons(4).any? { |r| r == pattern } }
       return true if each_diagonal_up.any? { |d| d.each_cons(4).any? { |d| d == pattern } }
+      return true if each_diagonal_down.any? { |d| d.each_cons(4).any? { |d| d == pattern } }
       false
     end
 
@@ -79,6 +80,24 @@ module Models
       end
       @row_size.times do |i|
         diag = (i...@row_size).zip(0...@column_size).reduce([]) do |diag, x|
+          diag << get(x[0], x[1])
+        end
+        yield diag
+      end
+      invariant
+    end
+
+    def each_diagonal_down
+      invariant
+      return to_enum :each_diagonal_down unless block_given?
+      @column_size.times do |j|
+        diag = (j.downto(0)).zip(0...row_size).reduce([]) do |diag, x|
+          diag << get(x[1], x[0])
+        end
+        yield diag
+      end
+      @row_size.times do |i|
+        diag = (i...@row_size).zip((column_size - 1).downto(0)).reduce([]) do |diag, x|
           diag << get(x[0], x[1])
         end
         yield diag
