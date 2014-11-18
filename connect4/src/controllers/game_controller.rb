@@ -4,6 +4,8 @@ require 'thread'
 require_relative '../models'
 
 module Controllers
+  ACTION_NEW_GAME = 1
+  ACTION_SWITCH_GAME = 2
   class GameController
     include Test::Unit::Assertions
 
@@ -60,12 +62,12 @@ module Controllers
       init_buttons
     end
 
-    def on_new_game_clicked(button)
+    def on_new_game_clicked(_button)
       start_connect_4 if @game_name == :'Connect 4'
       start_otto_toot if @game_name == :'OTTO TOOT'
     end
 
-    def on_switch_game_clicked(button)
+    def on_switch_game_clicked(_button)
       if @game_name == :'OTTO TOOT'
         @game_name = :'Connect 4'
         start_connect_4
@@ -84,18 +86,42 @@ module Controllers
         set_board_token(token, column)
         @player.tokens[token] -= 1
         update_token_message
-        check_end
+        end_game if game_over
         make_move(@opponent)
-        check_end
+        end_game if game_over
       end
     end
 
-    def check_end
-      end_game(:win) if @board.win?(@player.pattern)
-      end_game(:lost) if @board.win?(@player.pattern)
+    def game_over
+      @board.win?(@player.pattern) || @board.win?(@opponent.pattern)
     end
 
-    def end_game(scenario)
+    def end_game
+      puts "You have lost" if @board.win?(@opponent.pattern)
+      puts "You have won" if @board.win?(@player.pattern)
+      end_dialog = Gtk::MessageDialog.new(@builder['game_window'],
+        Gtk::Dialog::DESTROY_WITH_PARENT,
+        Gtk::MessageDialog::INFO,
+        Gtk::MessageDialog::BUTTONS_NONE,
+        @board.win?(@player.pattern) ? 'You have won!' : 'You have lost!'
+      )
+      end_dialog.add_buttons(
+          ['New Game', Controllers::ACTION_NEW_GAME],
+          ['Switch Games', Controllers::ACTION_SWITCH_GAME],
+          [Gtk::Stock::CLOSE, Gtk::Dialog::RESPONSE_CLOSE]
+      )
+      action = end_dialog.run
+      case action
+        when Controllers::ACTION_NEW_GAME
+          on_new_game_clicked(nil)
+        when Controllers::ACTION_SWITCH_GAME
+          on_switch_game_clicked(nil)
+        when Gtk::Dialog::RESPONSE_CLOSE
+          Gtk::main_exit
+        else
+          on_new_game_clicked(nil)
+      end
+      end_dialog.destroy
 
     end
 
