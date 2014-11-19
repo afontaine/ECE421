@@ -146,7 +146,6 @@ module Controllers
     end
 
     def init_buttons
-      @button_lock.unlock if @button_lock.locked?
       @board.column_size.times do |i|
         j = 0
         @player.tokens.keys.each do |key|
