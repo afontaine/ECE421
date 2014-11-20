@@ -94,17 +94,17 @@ module Controllers
     end
 
     def game_over
-      @board.win?(@player.pattern) || @board.win?(@opponent.pattern)
+      @board.win?(@player.pattern) || @board.win?(@opponent.pattern) || !@board.board.any? { |e| e.any? { |e| e.nil? } }
     end
 
     def end_game
-      puts "You have lost" if @board.win?(@opponent.pattern)
-      puts "You have won" if @board.win?(@player.pattern)
+      message = 'You have tied!' unless @board.board.any? { |e| e.any? { |e| e.nil? } }
+      message ||= @board.win?(@player.pattern) ? 'You have won!' : 'You have lost!'
       end_dialog = Gtk::MessageDialog.new(@builder['game_window'],
         Gtk::Dialog::DESTROY_WITH_PARENT,
         Gtk::MessageDialog::INFO,
         Gtk::MessageDialog::BUTTONS_NONE,
-        @board.win?(@player.pattern) ? 'You have won!' : 'You have lost!'
+        message
       )
       end_dialog.add_buttons(
           ['New Game', Controllers::ACTION_NEW_GAME],
